@@ -33,5 +33,5 @@ lang =
 ```
 	
 **Credits**
-* Jenu : marco.mich...@gmail.com 
+* Jenu : marco.mich...@gmail.com from https://groups.google.com/forum/#!msg/angular/9C1F6PJ5KVY/7jSZTKXRCokJ 
 * Jim Lavin : http://codingsmackdown.tv/blog/2012/12/14/localizing-your-angularjs-app/
