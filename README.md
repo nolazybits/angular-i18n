@@ -4,7 +4,6 @@ This module has:
 * a service (localize) 
 * a filter (i18n)
 * a directive (i18n).
-So you can use localization in your controllers, models, template, ...
 
 Use it like this in your template (i18n is the filter)
 ```
@@ -12,8 +11,10 @@ Use it like this in your template (i18n is the filter)
 {{"My name is %s and i am %d years old." | i18n:"Max":"98"}} 
 ```
 	
-Define your language files in your approot/i18n/, named as the language you are targeting,
-ie approot/i18n/en-US.js
+Define your language files in your approot/i18n/, named as the language you are targeting, ie
+```
+approot/i18n/en-US.js
+```
 The en-US.js file looks like this
 ```
 lang = 
