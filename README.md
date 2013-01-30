@@ -11,11 +11,11 @@ Use it like this in your template (i18n is the filter)
 {{"My name is %s and i am %d years old." | i18n:"Max":"98"}} 
 ```
 	
-Define your language files in your approot/i18n/, named as the language you are targeting, ie
+Define your language JSON files in your approot/i18n/, named as the language you are targeting, ie
 ```
 approot/i18n/en-US.json
 ```
-The en-US.js file looks like this
+The en-US.json file looks like this
 ```
 {
     "Hello World" : "Hello World",
@@ -23,7 +23,7 @@ The en-US.js file looks like this
 }
 ```
 
-The fr-FR.js file looks like this
+The fr-FR.json file looks like this
 ```
 {
     "Hello World" : "Bonjour Monde",
