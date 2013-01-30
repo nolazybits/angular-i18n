@@ -1,0 +1,8 @@
+From:
+http://www.diveintojavascript.com/projects/javascript-sprintf
+
+Description:
+sprintf() for JavaScript is a complete open source JavaScript sprintf implementation.
+
+Version:
+0.7-beta1

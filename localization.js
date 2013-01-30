@@ -1,159 +1,175 @@
-'use strict';
+'use_strict';
 
-angular.module('localization', [])
-
-//  create our localization service
-.factory
+require
 (
-	'localize',
-	[
-		'$http', '$rootScope', '$window',
-		function($http, $rootScope, $window)
-		{
-			var localize =
-			{
-			//  use the $window service to get the language of the user's browser
-				language : $window.navigator.userLanguage || $window.navigator.language,
+    [
+        'angular'
+    ],
+    function(angular)
+    {
+        'use strict';
 
-			//  array to hold the localized resource string entries
-				dictionary : [],
+        angular.module('localization', [])
 
-			//  flag to indicate if the service hs loaded the resource file
-				resourceFileLoaded : false,
+        //  create our localization service
+        .factory
+        (
+            'localize',
+            [
+                '$http', '$rootScope', '$window',
+                function($http, $rootScope, $window)
+                {
+                    var localize =
+                    {
+                    //  use the $window service to get the language of the user's browser
+                        language : $window.navigator.userLanguage || $window.navigator.language,
 
-				successCallback : function (data)
-				{
-				//  store the returned array in the dictionary
-					localize.dictionary = data;
+                    //  array to hold the localized resource string entries
+                        dictionary : undefined,
 
-				//  set the flag that the resource are loaded
-					localize.resourceFileLoaded = true;
+                    //  flag to indicate if the service hs loaded the resource file
+                        resourceFileLoaded : false,
 
-				//  broadcast that the file has been loaded
-					$rootScope.$broadcast('localizeResourcesUpdates');
-				},
+                        successCallback : function (data)
+                        {
+                        //  store the returned array in the dictionary
+                            localize.dictionary = data;
 
-				initLocalizedResources : function ()
-				{
-				//  build the url to retrieve the localized resource file
-					var url = '/i18n/' + localize.language + '.js';
+                        //  set the flag that the resource are loaded
+                            localize.resourceFileLoaded = true;
 
-				//  request the resource file
-					$http({ method:"GET", url:url, cache:false })
-					.success(localize.successCallback)
-					.error
-					(
-						function ()
-						{
-						//  the request failed set the url to the default resource file
-							var url = '/i18n/default.js';
-						//  request the default resource file
-							$http({ method:"GET", url:url, cache:false })
-							.success(localize.successCallback);
-						//  TODO what happens if this call fails?
-						}
-					);
-				},
+                        //  broadcast that the file has been loaded
+                            $rootScope.$broadcast('localizeResourcesUpdates');
+                        },
 
-				getLocalizedString : function (value)
-				{
-				//  default the result to an empty string
-					var translated = '';
+                        initLocalizedResources : function ()
+                        {
+                           //  build the url to retrieve the localized resource file
+                            var url = '/i18n/' + localize.language + '.json';
 
-				//  check to see if the resource file has been loaded
-					if (!localize.resourceFileLoaded)
-					{
-					//  call the init method
-						localize.initLocalizedResources();
-					//  set the flag to keep from looping in init
-						localize.resourceFileLoaded = true;
-					//  return the empty string
-						return translated;
-					}
+                            //  request the resource file
+                            $http({ method:"GET", url:url, cache:false })
+                                .success(localize.successCallback)
+                                .error
+                            (
+                                function ()
+                                {
+                                    //  the request failed set the url to the default resource file
+                                    var url = '/i18n/default.json';
+                                    //  request the default resource file
+                                    $http({ method:"GET", url:url, cache:false })
+                                        .success(localize.successCallback);
+                                    //  TODO what happens if this call fails?
+                                }
+                            );
+                        },
 
-				//  make sure the dictionary has valid data
-					if ( (localize.dictionary !== []) && (localize.dictionary.length > 0) )
-					{
-						var log_untranslated = false;
-						var placeholders = [];
+                        getLocalizedString : function (value)
+                        {
+                        //  default the result to an empty string
+                            var translated = '!NO TRANSLATION!';
 
-						for(var i=1; i < arguments.length; i++)
-						{
-							placeholders.push(arguments[i]);
-						}
+                        //  check to see if the resource file has been loaded
+                            if (!localize.resourceFileLoaded)
+                            {
+                            //  call the init method
+                                localize.initLocalizedResources();
+                            //  set the flag to keep from looping in init
+                                localize.resourceFileLoaded = true;
+                            //  return the empty string
+                                return translated;
+                            }
 
-						var translate = function(value, placeholders)
-						{
-							var placeholders = placeholders || null;
-							var translated = localize.dictionary[value];
-							if (translated === undefined)
-							{
-								if (log_untranslated == true)
-								{
-									//  Log untranslated value
-								}
-								return sprintf(value, placeholders);
-							}
-							return sprintf(translated, placeholders);
-						};
+                        //  make sure the dictionary has valid data
+                            if ( typeof localize.dictionary === "object" )
+                            {
+                                var log_untranslated = false;
+                                var placeholders = [];
 
-						var result = translate(value, placeholders);
-						if ( (translated !== null) && (translated != undefined) )
-						{
-							//  set the translated
-							translated = result;
-						}
-					}
+                                for(var i=1; i < arguments.length; i++)
+                                {
+                                    placeholders.push(arguments[i]);
+                                }
 
-				//  return the value to the call
-					return translated;
-				}
-			};
+                                var translate = function(value, placeholders)
+                                {
+                                    var placeholders = placeholders || null;
+                                    var translated = localize.dictionary[value];
+                                    if (translated === undefined)
+                                    {
+                                        if (log_untranslated == true)
+                                        {
+                                            //  Log untranslated value
+                                        }
+                                        return sprintf(value, placeholders);
+                                    }
+                                    return sprintf(translated, placeholders);
+                                };
 
-		//  return the local instance when called
-			return localize;
-		}
-	]
-)
+                                var result = translate(value, placeholders);
+                                if ( (translated !== null) && (translated != undefined) )
+                                {
+                                    //  set the translated
+                                    translated = result;
+                                }
+                            }
+                            //  add watcher on the item to get the new string
+                            else
+                            {
 
-.filter
-(
-	'i18n',
-	[
-		'localize',
-		function (localize)
-		{
-			return function (input)
-			{
-				return localize.getLocalizedString(input);
-			};
-		}
-	]
-)
+                            }
 
-.directive
-(
-	'i18n',
-	[
-		'localize',
-		function(localize)
-		{
-			return {
-				restrict : "EAC",
-				link : function (scope, elm, attrs)
-				{
-				//  construct the tag to insert into the element
-					var tag = localize.getLocalizedString(attrs.i18n);
+                        //  return the value to the call
+                            return translated;
+                        }
+                    };
 
-				//  update the element only if data was returned
-					if( (tag !== null) && (tag !== undefined) && (tag !== '') )
-					{
-					//  insert the text into the element
-						elm.append(tag);
-					}
-				}
-			}
-		}
-	]
+                //  return the local instance when called
+                    return localize;
+                }
+            ]
+        )
+
+        .filter
+        (
+            'i18n',
+            [
+                'localize',
+                function (localize)
+                {
+                    return function (input)
+                    {
+                        return localize.getLocalizedString(input);
+                    };
+                }
+            ]
+        )
+
+        .directive
+        (
+            'i18n',
+            [
+                'localize',
+                function(localize)
+                {
+                    return {
+                        restrict : "EAC",
+                        link : function (scope, elm, attrs)
+                        {
+                        //  construct the tag to insert into the element
+                            var tag = localize.getLocalizedString(attrs.i18n);
+
+                        //  update the element only if data was returned
+                            if( (tag !== null) && (tag !== undefined) && (tag !== '') )
+                            {
+                            //  insert the text into the element
+                                elm.append(tag);
+                            }
+                        }
+                    }
+                }
+            ]
+        );
+    }
 );
 
