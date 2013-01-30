@@ -13,11 +13,10 @@ Use it like this in your template (i18n is the filter)
 	
 Define your language files in your approot/i18n/, named as the language you are targeting, ie
 ```
-approot/i18n/en-US.js
+approot/i18n/en-US.json
 ```
 The en-US.js file looks like this
 ```
-lang = 
 {
     "Hello World" : "Hello World",
     "My name is %s and i am %d years old." : "My name is %s and i am %d years old."
@@ -26,7 +25,6 @@ lang =
 
 The fr-FR.js file looks like this
 ```
-lang = 
 {
     "Hello World" : "Bonjour Monde",
     "My name is %s and i am %d years old." : "Mon prenom est %s et j'ai %d ans."
