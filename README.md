@@ -11,16 +11,18 @@ Use it like this in your template (i18n is the filter)
 {{ "My name is %s and i am %d years old." | i18n:"Max":"98" }} 
 ```
 
-The service part of the module will determine the language that should be displayed, based on the language of the browser. However the desired language can also be passed in from $rootScope with the variable $rootScope.lang
+Configuration is possible by passing in variables defined in your own app's `$rootScope`  (not sure if this is the best way to do this, but hey-ho).
+
+The correct language to display is determine by the service part of this module, based on the language of the browser. However the desired language can also be passed in from `$rootScope` with the variable `$rootScope.lang`
 
 Define your language JSON files named as the language you are targeting, ie
 ```
 /i18n/en-US.json
 ```
 
-If your lang files can't be located at "/i18n/", the location can be passed in as the variable $rootScope.i18nPath (not sure if this is the best way to do this, but hey-ho).
+If your lang files can't be placed under "/i18n/", the location can be passed in as the variable `$rootScope.i18nPath`
 
-The JSON files must exist, but can be empty. If they're empty, each string will fall back to the string on which the filter is acting until translated.
+The JSON files must exist, but can be empty. If they're empty, each string will fall back to the string on which the filter is acting, until translated.
 
 The en-US.json file looks like this
 ```
