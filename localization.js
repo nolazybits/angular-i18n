@@ -1,15 +1,15 @@
 angular.module('localization', [])
-    //  create our localization service
+	//  create our localization service
 	.factory('localize',['$http', '$rootScope', '$window', function($http, $rootScope, $window){
 		var localize = {
-			//  use the $window service to get the language of the user's browser
-			language : ($rootScope.lang) ? $rootScope.lang : ($window.navigator.userLanguage || $window.navigator.language),
-
 			//  array to hold the localized resource string entries
 			dictionary : undefined,
 
 			//  flag to indicate if the service hs loaded the resource file
 			resourceFileLoaded : false,
+
+			//  use the $window service to get the language of the user's browser
+			language: $rootScope.appconfig.user.lang || $window.navigator.userLanguage || $window.navigator.language,
 
 			successCallback : function (data) {
 				//  store the returned array in the dictionary
@@ -24,15 +24,14 @@ angular.module('localization', [])
 
 			initLocalizedResources : function (){
 				//  build the url to retrieve the localized resource file
-				var i18nPath = ($rootScope.i18nPath) ? $rootScope.i18nPath : '/i18n/';
+				var i18nPath = $rootScope.appconfig.i18nPath || '/i18n/';
 				var url = i18nPath + localize.language + '.json';
-
 				//  request the resource file
 				$http({ method:"GET", url:url, cache:false })
 					.success(localize.successCallback)
 					.error(function (){
-						//  the request failed set the url to the default resource file
-						var url = $rootScope.i18nPath + 'default.json';
+						//  the request failed set the url to the english resource file
+						var url = i18nPath  + 'en-US.json';
 						//  request the default resource file
 						$http({ method:"GET", url:url, cache:false }).success(localize.successCallback);
 							//  TODO what happens if this call fails?
@@ -41,8 +40,14 @@ angular.module('localization', [])
 			},
 
 			getLocalizedString : function (value){
+				// Support changing of language
+				if($rootScope.appconfig.user.lang && localize.language != $rootScope.appconfig.user.lang){
+					localize.language = $rootScope.appconfig.user.lang;
+					localize.resourceFileLoaded = false;
+				}
+
 				//  default the result to an empty string
-				var translated = '!UNTRANSLATED!';
+				var translated = '';
 
 				//  check to see if the resource file has been loaded
 				if (!localize.resourceFileLoaded){
@@ -117,4 +122,3 @@ angular.module('localization', [])
 			}
 		}
 	}]);
-   
