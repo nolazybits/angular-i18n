@@ -44,7 +44,7 @@
                                 function ()
                                 {
                                     //  the request failed set the url to the default resource file
-                                    var url = '/i18n/default.json';
+                                    var url = '/i18n/en-US.json';
                                     //  request the default resource file
                                     $http({ method:"GET", url:url, cache:false })
                                         .success(localize.successCallback);
