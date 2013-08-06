@@ -66,8 +66,8 @@ require
 
                         getLocalizedString : function (value)
                         {
-                        //  default the result to an empty string
-                            var translated = '!NO TRANSLATION!';
+                        //  Contextualize missing translation
+                            var translated = '!' + value + '!';
 
                         //  check to see if the resource file has been loaded
                             if (!localize.resourceFileLoaded)
