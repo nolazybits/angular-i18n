@@ -1,14 +1,3 @@
-'use_strict';
-
-require
-(
-    [
-        'angular'
-    ],
-    function(angular)
-    {
-        'use strict';
-
         angular.module('localization', [])
 
         //  create our localization service
@@ -170,6 +159,3 @@ require
                 }
             ]
         );
-    }
-);
-
