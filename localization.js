@@ -22,7 +22,7 @@ require
                     var localize =
                     {
                     //  use the $window service to get the language of the user's browser
-                        language : $window.navigator.userLanguage || $window.navigator.language,
+                        language : $window.navigator.userLanguage || $window.navigator.language || 'en-US',
 
                     //  array to hold the localized resource string entries
                         dictionary : undefined,
