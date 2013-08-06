@@ -5,6 +5,15 @@ This module has:
 * a filter (i18n)
 * a directive (i18n).
 
+Setup
+
+```
+<script src="localization.js"></script>
+<script type="application/javascript">
+	var myapp = angular.module('myapp', ['localization']);
+</script>
+```
+
 Use it like this in your template (i18n is the filter)
 ```
 {{'Hello World'|i18n}} 
