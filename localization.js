@@ -1,14 +1,3 @@
-'use_strict';
-
-require
-(
-    [
-        'angular'
-    ],
-    function(angular)
-    {
-        'use strict';
-
         angular.module('localization', [])
 
         //  create our localization service
@@ -22,7 +11,7 @@ require
                     var localize =
                     {
                     //  use the $window service to get the language of the user's browser
-                        language : $window.navigator.userLanguage || $window.navigator.language,
+                        language : $window.navigator.userLanguage || $window.navigator.language || 'en-US',
 
                     //  array to hold the localized resource string entries
                         dictionary : undefined,
@@ -55,7 +44,7 @@ require
                                 function ()
                                 {
                                     //  the request failed set the url to the default resource file
-                                    var url = '/i18n/default.json';
+                                    var url = '/i18n/en-US.json';
                                     //  request the default resource file
                                     $http({ method:"GET", url:url, cache:false })
                                         .success(localize.successCallback);
@@ -66,8 +55,8 @@ require
 
                         getLocalizedString : function (value)
                         {
-                        //  default the result to an empty string
-                            var translated = '!NO TRANSLATION!';
+                        //  Contextualize missing translation
+                            var translated = '!' + value + '!';
 
                         //  check to see if the resource file has been loaded
                             if (!localize.resourceFileLoaded)
@@ -170,6 +159,3 @@ require
                 }
             ]
         );
-    }
-);
-
