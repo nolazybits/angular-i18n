@@ -128,7 +128,8 @@ angular.module('localization', [])
         {
             return function (input)
             {
-                return localize.getLocalizedString(input);
+                //also pass all the arguments
+                return localize.getLocalizedString.apply(this, arguments);
             };
         }
     ]
