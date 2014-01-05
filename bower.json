@@ -4,7 +4,7 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/zeflasher/angularjs-i18n"
-  }
+  },
   "dependencies": {
     "sprintf": null
   }
