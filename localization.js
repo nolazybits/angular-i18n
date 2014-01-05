@@ -126,9 +126,9 @@ angular.module('localization', [])
         'localize',
         function (localize)
         {
-            return function (input)
+            return function ()
             {
-                return localize.getLocalizedString(input);
+                return localize.getLocalizedString.apply(null, arguments);
             };
         }
     ]
