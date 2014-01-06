@@ -65,7 +65,7 @@ angular.module('localization', [])
                 getLocalizedString : function (value)
                 {
                 //  Contextualize missing translation
-                    var translated = localize.format('!{0}!', value);
+                    var translated = localize.sprintf('!{0}!', value);
 
                 //  check to see if the resource file has been loaded
                     if (!localize.resourceFileLoaded)
