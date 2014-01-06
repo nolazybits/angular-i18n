@@ -10,13 +10,16 @@ angular.module('localization', [])
         {
             var localize =
             {
+			//  path for localization files
+				path : '/i18n/',
+			
             //  use the $window service to get the language of the user's browser
-                language : $window.navigator.userLanguage || $window.navigator.language || 'en-US',
+                language : $window.navigator.userLanguage || $window.navigator.language,
 
             //  array to hold the localized resource string entries
                 dictionary : undefined,
 
-            //  flag to indicate if the service hs loaded the resource file
+            //  flag to indicate if the service has loaded the resource file
                 resourceFileLoaded : false,
 
                 successCallback : function (data)
@@ -31,40 +34,44 @@ angular.module('localization', [])
                     $rootScope.$broadcast('localizeResourcesUpdates');
                 },
 
-                initLocalizedResources : function ()
+                initLocalizedResources : function (callback)
                 {
-                   //  build the url to retrieve the localized resource file
-                    var url = '/i18n/' + localize.language + '.json';
+                   //  build the URL to retrieve the localized resource file
+                    var url = localize.path + localize.language + '.json';
 
                     //  request the resource file
                     $http({ method:"GET", url:url, cache:false })
-                        .success(localize.successCallback)
-                        .error
-                    (
-                        function ()
-                        {
-                            //  the request failed set the url to the default resource file
-                            var url = '/i18n/en-US.json';
-                            //  request the default resource file
-                            $http({ method:"GET", url:url, cache:false })
-                                .success(localize.successCallback);
-                            //  TODO what happens if this call fails?
-                        }
-                    );
+					.success(function(data){
+						localize.successCallback(data);
+						if(callback && (typeof callback == 'function')) {callback()}
+					})
+					.error
+					(
+						function ()
+						{
+						//  the request failed set the URL to the default resource file
+							 var url = localize.path + 'default.json';
+						//  request the default resource file
+							$http({ method:"GET", url:url, cache:false })
+							.success(function(data){
+								localize.successCallback(data);
+								if(callback && (typeof callback == 'function')) {callback()}
+							});
+						//  TODO what happens if this call fails?
+						}
+					);
                 },
 
                 getLocalizedString : function (value)
                 {
                 //  Contextualize missing translation
-                    var translated = '!' + value + '!';
+                    var translated = localize.format('!{0}!', value);
 
                 //  check to see if the resource file has been loaded
                     if (!localize.resourceFileLoaded)
                     {
                     //  call the init method
                         localize.initLocalizedResources();
-                    //  set the flag to keep from looping in init
-                        localize.resourceFileLoaded = true;
                     //  return the empty string
                         return translated;
                     }
