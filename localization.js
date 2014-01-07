@@ -113,7 +113,18 @@ angular.module('localization', [])
 
                 //  return the value to the call
                     return translated;
-                }
+                },
+				
+				replace: function(elm, str)
+				{
+					var tag = localize.getLocalizedString(str);
+                //  update the element only if data was returned
+                    if( (tag !== null) && (tag !== undefined) && (tag !== '') )
+                    {
+                    //  insert the text into the element
+                        elm.html(tag);
+                    }
+				}
             };
 
         //  return the local instance when called
@@ -148,14 +159,20 @@ angular.module('localization', [])
                 restrict : "EAC",
                 link : function (scope, elm, attrs)
                 {
-                //  construct the tag to insert into the element
-                    var tag = localize.getLocalizedString(attrs.i18n);
-
-                //  update the element only if data was returned
-                    if( (tag !== null) && (tag !== undefined) && (tag !== '') )
-                    {
-                    //  insert the text into the element
-                        elm.append(tag);
+					var str = attrs.i18n ? attrs.i18n : elm.html();
+					
+					if (localize.resourceFileLoaded)
+					{
+						localize.replace(elm, str);
+					}
+					else
+					{
+                        deregister = scope.$on('localizeResourcesUpdates',
+                        function()
+                        {
+                            deregister();
+                            localize.replace(elm, str);
+                        });
                     }
                 }
             }
