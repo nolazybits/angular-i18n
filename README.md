@@ -1,5 +1,12 @@
 This module has been created by merging the work of 2 developers. See bottom of the page for credits.
 
+**Dependencies**
+
+This module has dependencies resolved with bower on:
+* sptrinf ("sprintf")
+
+**Usage**
+
 This module has:
 * a service (localize) 
 * a filter (i18n)
