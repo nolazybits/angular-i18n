@@ -1,30 +1,50 @@
-This module has been created by merging the work of 2 developers. See bottom of the page for credits.
+angular-i18n is a small Angular module in charge of i18n.
 
-**Dependencies**
+###Dependencies###
 
-This module has dependencies resolved with bower on:
+This module ```angular-i18n``` has dependencies resolved with bower on:
 * sptrinf ("sprintf")
 
-**Usage**
+###Usage###
 
 This module has:
-* a service (localize) 
+* a provider ($i18n) 
 * a filter (i18n)
 * a directive (i18n).
 
-Setup
+####Setup####
 
+Load the javascript and add the module ```angular-i18n``` in the dependencies  
 ```
-<script src="localization.js"></script>
+<script src="angular-i18n.js"></script>
 <script type="application/javascript">
-	var myapp = angular.module('myapp', ['localization']);
+	var myapp = angular.module('myapp', ['angular-i18n']);
 </script>
+```  
+
+####Configuration####  
+The provider can be configured using the following:
+| Methods              | Description                                                                                                   |
+| -------------------- | ------------------------------------------------------------------------------------------------------------- |
+| setPathLanguageURL   | Set the template URL where translation file will be loaded from                                               |
+| setPathLanguageRegex | The regex to look for which will be replaced with the current language string id (i.e en**_**US) to be loaded |
+| setDefaultLanguage   | The default language to use                                                                                   |       
+| setLanguage          | The language to use                                                                                           | 
+| setFallback          | The fallback translation object if the translation file failed to load                                        |
+
+
+```
+    $i18nProvider
+        .setPathLanguageRegex(/\|LANG\|/)
+        .setPathLanguageURL('/i18n/|LANG|.json')
+        .setDefaultLanguage('en_US')
+        .setFallback({'WELCOME': 'FALLBACK WELCOME %s', 'GOODBYE': 'FALLBACK WELCOME GOODBYE'})
 ```
 
-Use it like this in your template (i18n is the filter)
+####Filter 'i18n'3333
+Use it like this in your template
 ```
-{{ 'Hello World' | i18n }} 
-{{ "My name is %s and i am %d years old." | i18n:"Max":"98" }} 
+{{ 'TRANSLATION_ID' | i18n }}  
 ```
 
 Configuration is possible by passing in variables defined in your own app's `$rootScope`  (not sure if this is the best way to do this, but hey-ho).

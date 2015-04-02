@@ -1,6 +1,6 @@
 {
-  "name": "zef-angularjs-i18n",
-  "version": "0.1.1",
+  "name": "angular-i18n",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/zeflasher/angularjs-i18n"
