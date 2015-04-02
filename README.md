@@ -1,18 +1,18 @@
 angular-i18n is a small Angular module in charge of i18n.
 
-###Dependencies###
+### Dependencies
 
 This module ```angular-i18n``` has dependencies resolved with bower on:
 * sptrinf ("sprintf")
 
-###Usage###
+### Usage
 
 This module has:
 * a provider ($i18n) 
 * a filter (i18n)
 * a directive (i18n).
 
-####Setup####
+#### Setup
 
 Load the javascript and add the module ```angular-i18n``` in the dependencies  
 ```
@@ -22,24 +22,49 @@ Load the javascript and add the module ```angular-i18n``` in the dependencies
 </script>
 ```  
 
-####Configuration####  
-The provider can be configured using the following:
-| Methods              | Description                                                                                                   |
-| -------------------- | ------------------------------------------------------------------------------------------------------------- |
-| setPathLanguageURL   | Set the template URL where translation file will be loaded from                                               |
-| setPathLanguageRegex | The regex to look for which will be replaced with the current language string id (i.e en**_**US) to be loaded |
-| setDefaultLanguage   | The default language to use                                                                                   |       
-| setLanguage          | The language to use                                                                                           | 
-| setFallback          | The fallback translation object if the translation file failed to load                                        |
+#### Configuration
+The provider can be configured using the following:  
 
+| Methods | Description | Default |
+| :-------| ----------- | ------- |
+| [setPathLanguageURL](#setPathLanguageURL) | Set the template URL where translation file will be loaded from | ```'/i18n/|LANG|.json'``` |
+| [setPathLanguageRegex](#setPathLanguageRegex) | The regex to look for which will be replaced with the current language string id (i.e en**_**US) to be loaded | ```/\|LANG\|/``` |
+| [setDefaultLanguage](#setDefaultLanguage) | The default language to use | ```'en-US'``` |       
+| [setFallback](#setFallback) | The fallback translation object if the translation file failed to load | ```null``` |  
 
+Example:  
 ```
     $i18nProvider
+    	.setPathLanguageURL('/i18n/|LANG|.json')
         .setPathLanguageRegex(/\|LANG\|/)
-        .setPathLanguageURL('/i18n/|LANG|.json')
-        .setDefaultLanguage('en_US')
+        .setDefaultLanguage('en-US')
         .setFallback({'WELCOME': 'FALLBACK WELCOME %s', 'GOODBYE': 'FALLBACK WELCOME GOODBYE'})
-```
+```  
+
+##### setPathLanguageURL  
+> Set the template URL where translation file will be loaded from  
+**default:** ```'/i18n/|LANG|.json'```  
+
+The template URL contains a token that will be replaced (using regex replace) with the current language id.  
+**Note:** the language id will have the the '-' replaced with '_' (i.e 'en-US' will become en_US).  
+e.g: if you have a language set to 'en-US' the file */i18n/en_US.json* will be loaded.
+
+##### setPathLanguageRegex
+> The regex to look for which will be replaced with the current language string id (i.e en**_**US) to be loaded  
+**default:** ```/\|LANG\|/```  
+
+This is the regular expression that will be looked for and replaced with the language id in the path template URL.  
+Note: the language id will have the the '-' replaced with '_' (i.e 'en-US' will become en_US).  
+So if you have a language set to 'en-US' the file */i18n/en_US.json* will be loaded.
+
+
+##### setDefaultLanguage
+> The default language to use  
+**default:** ```'en-US'```
+
+##### setFallback
+> The fallback translation object if the translation file failed to load  
+**default:** ```null```
 
 ####Filter 'i18n'3333
 Use it like this in your template
