@@ -22,15 +22,33 @@ Load the javascript and add the module ```angular-i18n``` in the dependencies
 </script>
 ```  
 
-#### Configuration
-The provider can be configured using the following:  
+##### JSON files  
+The en-US.json file looks like this  
+```
+{
+    "HELLO_WORLD" : "Hello World",
+    "NAME_AGE" : "My name is %s and i am %d years old."
+}
+```
+
+The fr-FR.json file looks like this
+```
+{
+    "HELLO_WORLD" : "Bonjour Monde",
+    "NAME_AGE" : "Mon prenom est %s et j'ai %d ans."
+}
+```
+
+#### Provider '$i18n'
+The provider has the following methods
 
 | Methods | Description | Default |
 | :-------| ----------- | ------- |
-| [setPathLanguageURL](#setPathLanguageURL) | Set the template URL where translation file will be loaded from | ```'/i18n/|LANG|.json'``` |
-| [setPathLanguageRegex](#setPathLanguageRegex) | The regex to look for which will be replaced with the current language string id (i.e en**_**US) to be loaded | ```/\|LANG\|/``` |
-| [setDefaultLanguage](#setDefaultLanguage) | The default language to use | ```'en-US'``` |       
-| [setFallback](#setFallback) | The fallback translation object if the translation file failed to load | ```null``` |  
+| [setPathLanguageURL](#setpathlanguageurl) | Set the template URL where translation file will be loaded from | ```'/i18n/|LANG|.json'``` |
+| [setPathLanguageRegex](#setpathlanguageregex) | The regex to look for which will be replaced with the current language string id (i.e en**_**US) to be loaded | ```/\|LANG\|/``` |
+| [setDefaultLanguage](#setdefaultlanguage) | The default language to use | ```'en-US'``` |       
+| [setLanguage](#setlanguage) | The language to use | ```null``` |       
+| [setFallback](#setfallback) | The fallback translation object if the translation file failed to load | ```null``` |  
 
 Example:  
 ```
@@ -57,7 +75,6 @@ This is the regular expression that will be looked for and replaced with the lan
 Note: the language id will have the the '-' replaced with '_' (i.e 'en-US' will become en_US).  
 So if you have a language set to 'en-US' the file */i18n/en_US.json* will be loaded.
 
-
 ##### setDefaultLanguage
 > The default language to use  
 **default:** ```'en-US'```
@@ -66,41 +83,42 @@ So if you have a language set to 'en-US' the file */i18n/en_US.json* will be loa
 > The fallback translation object if the translation file failed to load  
 **default:** ```null```
 
-####Filter 'i18n'3333
-Use it like this in your template
+#### Service '$18n'  
+The correct language to display is determine by the provider, based on the language of the browser, the default language set or the current language set (if any) as follow:  ```language || $window.navigator.userLanguage || $window.navigator.language || defaultLanguage;```  
+
+The service can use all the provious method described in the [provider](#provider_'$i18n') section plus the following:
+
+| Methods | Description |  
+| :-------| ----------- |  
+| [getCurrentLanguage](#getcurrentlanguage) | The language to use |  
+| [getTranslation](#gettranslation) | Translate instantaneously, used by the filter |  
+| [loadTranslationFile](#loadtranslationfile) | Loads the translation file for the current language using the URL and regexp provided at config time |  
+| [translate](#translate) | Return a promise. **THIS IS** the function you want to use |  
+
+##### getCurrentLanguage
+> Returns the current language.  
+
+The returned value check first the language property (can be set at runtime), then browser language and finally the default language (can be set at config and run time)
+
+##### getTranslation
+> Returns a translation instantaneously  
+
+This will return a translation instantaneously. So if the translation file is not loaded yet, this function will return either the fallback translation or null.
+
+##### loadTranslationFile
+> Loads the translation file for the current language using the URL and regexp provided at config time 
+
+##### translate
+> Return a promise. **THIS IS** the function you want to use 
+
+This will return a promise that can be used to update your scope, model, ...
+
+#### Filter 'i18n'
 ```
 {{ 'TRANSLATION_ID' | i18n }}  
 ```
 
-Configuration is possible by passing in variables defined in your own app's `$rootScope`  (not sure if this is the best way to do this, but hey-ho).
-
-The correct language to display is determine by the service part of this module, based on the language of the browser. However the desired language can also be passed in from `$rootScope` with the variable `$rootScope.lang`
-
-Define your language JSON files named as the language you are targeting, ie
+#### Directive 'i18n'
 ```
-/i18n/en-US.json
+<span i18n="TRANSLATION_ID"></span>
 ```
-
-If your lang files can't be placed under "/i18n/", the location can be passed in as the variable `$rootScope.i18nPath`
-
-The JSON files must exist, but can be empty. If they're empty, each string will fall back to the string on which the filter is acting, until translated.
-
-The en-US.json file looks like this
-```
-{
-    "Hello World" : "Hello World",
-    "My name is %s and i am %d years old." : "My name is %s and i am %d years old."
-}
-```
-
-The fr-FR.json file looks like this
-```
-{
-    "Hello World" : "Bonjour Monde",
-    "My name is %s and i am %d years old." : "Mon prenom est %s et j'ai %d ans."
-}
-```
-	
-**Credits**
-* Jenu : marco.mich...@gmail.com from https://groups.google.com/forum/#!msg/angular/9C1F6PJ5KVY/7jSZTKXRCokJ 
-* Jim Lavin : http://codingsmackdown.tv/blog/2012/12/14/localizing-your-angularjs-app/
