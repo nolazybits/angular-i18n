@@ -3,7 +3,7 @@ angular.module('angular-i18n', ['ng'])
     .provider('$i18n', [ function () {
         var pathLanguageRegex = /\|LANG\|/,
             pathLanguageURL = '/i18n/|LANG|.json',
-            defaultLanguage = 'en_US',
+            defaultLanguage = 'en-US',
             language = null,
             fallback = null;
 

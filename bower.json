@@ -1,9 +1,9 @@
 {
-  "name": "angular-i18n",
+  "name": "angular-internationalization",
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/zeflasher/angularjs-i18n"
+    "url": "git://github.com/nolazybits/angular-i18n"
   },
   "dependencies": {
     "sprintf": null
