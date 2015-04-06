@@ -86,7 +86,7 @@ So if you have a language set to 'en-US' the file */i18n/en_US.json* will be loa
 #### Service '$18n'  
 The correct language to display is determine by the provider, based on the language of the browser, the default language set or the current language set (if any) as follow:  ```language || $window.navigator.userLanguage || $window.navigator.language || defaultLanguage;```  
 
-The service can use all the provious method described in the [provider](#provider_'$i18n') section plus the following:
+The service can use all the provious method described in the [provider](#provider-i18n) section plus the following:
 
 | Methods | Description |  
 | :-------| ----------- |  
