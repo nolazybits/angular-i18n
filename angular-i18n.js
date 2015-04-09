@@ -29,6 +29,7 @@ angular.module('angular-i18n', ['ng'])
 
         this.setFallback = function(object) {
             fallback = object;
+            return this;
         };
 
         this.$get = ['$http', '$rootScope', '$window', '$q', '$timeout', function ($http, $rootScope, $window, $q, $timeout) {
