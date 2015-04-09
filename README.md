@@ -16,7 +16,7 @@ This module has:
 
 Load the javascript and add the module ```angular-i18n``` in the dependencies  
 ```
-<script src="angular-i18n.js"></script>
+<script src="angular-internationalization.js"></script>
 <script type="application/javascript">
 	var myapp = angular.module('myapp', ['angular-i18n']);
 </script>
