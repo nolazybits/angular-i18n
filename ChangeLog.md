@@ -1,0 +1,1 @@
+* 2015-03-13   v1.0.3   Removed $timeout.  

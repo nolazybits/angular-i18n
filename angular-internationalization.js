@@ -118,24 +118,21 @@ angular.module('angular-i18n', ['ng'])
                 promises[lang] = {};
 
                 //  request the resource file
-                $timeout(function() {
-                    $http({ method:"GET", url:url, cache:false })
-                        .success(function(data, status, headers, config) {
-                            self.loadTranslationFileSucceed(data, lang)
-                        })
-                        .error(function () {
-                            //  the request failed set the url to the english resource file
-                            var url2 = pathLanguageURL.replace(pathLanguageRegex, defaultLanguage.replace('-', '_'));
-                            //  request the default resource file
-                            $http({ method:"GET", url:url2, cache:false })
-                                .success(function(data, status, headers, config) {
-                                    self.loadTranslationFileSucceed(data, lang)
-                                })
-                                .error(function() {deferrer.reject("Could not load translation files "+ url +" or "+ url2)});
-                        }
-                    );
-                },
-                4000);
+                $http({ method:"GET", url:url, cache:false })
+                    .success(function(data, status, headers, config) {
+                        self.loadTranslationFileSucceed(data, lang)
+                    })
+                    .error(function () {
+                        //  the request failed set the url to the english resource file
+                        var url2 = pathLanguageURL.replace(pathLanguageRegex, defaultLanguage.replace('-', '_'));
+                        //  request the default resource file
+                        $http({ method:"GET", url:url2, cache:false })
+                            .success(function(data, status, headers, config) {
+                                self.loadTranslationFileSucceed(data, lang)
+                            })
+                            .error(function() {deferrer.reject("Could not load translation files "+ url +" or "+ url2)});
+                    }
+                );
 
             };
 
