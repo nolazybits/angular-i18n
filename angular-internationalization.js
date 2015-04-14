@@ -5,7 +5,25 @@ angular.module('angular-i18n', ['ng'])
             pathLanguageURL = '/i18n/|LANG|.json',
             defaultLanguage = 'en-US',
             language = null,
+            useBaseHrefTag = false,
+            baseHref = '',
             fallback = null;
+
+        this.setUseBaseHrefTag = function(value) {
+            useBaseHrefTag = value;
+            if( useBaseHrefTag )
+            {
+                var bases = document.getElementsByTagName('base');
+                if (bases.length > 0) {
+                    baseHref = bases[0].href;
+                }
+            }
+            else
+            {
+                baseHref = '';
+            }
+            return this;
+        };
 
         this.setPathLanguageRegex = function (regex) {
             pathLanguageRegex = regex;
@@ -104,7 +122,7 @@ angular.module('angular-i18n', ['ng'])
                     return;
                 }
 
-                var url = pathLanguageURL.replace(pathLanguageRegex, lang.replace('-', '_')),
+                var url = baseHref + pathLanguageURL.replace(pathLanguageRegex, lang.replace('-', '_')),
                     self = this;
 
                 //  create the translation object
@@ -124,7 +142,7 @@ angular.module('angular-i18n', ['ng'])
                     })
                     .error(function () {
                         //  the request failed set the url to the english resource file
-                        var url2 = pathLanguageURL.replace(pathLanguageRegex, defaultLanguage.replace('-', '_'));
+                        var url2 = baseHref + pathLanguageURL.replace(pathLanguageRegex, defaultLanguage.replace('-', '_'));
                         //  request the default resource file
                         $http({ method:"GET", url:url2, cache:false })
                             .success(function(data, status, headers, config) {

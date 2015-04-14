@@ -5,6 +5,7 @@
 
 declare module ng.i18n {
     interface II18nProvider {
+        setUseBaseHrefTag (value : boolean): II18nProvider;
         setPathLanguageRegex (regex : RegExp): II18nProvider;
         setPathLanguageURL (templateUrl : string): II18nProvider;
         setDefaultLanguage (defaultLang : string): II18nProvider;
