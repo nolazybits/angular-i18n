@@ -49,6 +49,7 @@ The provider has the following methods
 | [setDefaultLanguage](#setdefaultlanguage) | The default language to use | ```'en-US'``` |       
 | [setLanguage](#setlanguage) | The language to use | ```null``` |       
 | [setFallback](#setfallback) | The fallback translation object if the translation file failed to load | ```null``` |  
+| [setUseBaseHrefTag](#setusebasehreftag) | Should the library prepend the base tag url to the pathLanguageURL (this to help with relative links) | ```false``` |  
 
 Example:  
 ```
@@ -76,23 +77,31 @@ Note: the language id will have the the '-' replaced with '_' (i.e 'en-US' will 
 So if you have a language set to 'en-US' the file */i18n/en_US.json* will be loaded.
 
 ##### setDefaultLanguage
-> The default language to use  
+> The default language  
 **default:** ```'en-US'```
+
+##### setLanguage
+> The explicitly defined language  
+**default:** ```null```
 
 ##### setFallback
 > The fallback translation object if the translation file failed to load  
 **default:** ```null```
+
+##### setUseBaseHrefTag
+> Should the library prepend the base tag url to the pathLanguageURL (this to help with relative links) 
+**default:** ```false```
 
 #### Factory '$18n'  
 The correct language to display is determine by the provider, based on the language of the browser, the default language set or the current language set (if any) as follow:  ```language || $window.navigator.userLanguage || $window.navigator.language || defaultLanguage;```  
 
 The factory can use all the previous method described in the [provider](#provider-i18n) section plus the following:
 
-| Methods | Description |  
-| :-------| ----------- |  
-| [getCurrentLanguage](#getcurrentlanguage) | The language to use |  
-| [getTranslation](#gettranslation) | Translate instantaneously, used by the filter |  
-| [loadTranslationFile](#loadtranslationfile) | Loads the translation file for the current language using the URL and regexp provided at config time |  
+| Methods | Description |    
+| :-------| ----------- |    
+| [getCurrentLanguage](#getcurrentlanguage) | The language to use |      
+| [getTranslation](#gettranslation) | Translate instantaneously, used by the filter |      
+| [loadTranslationFile](#loadtranslationfile) | Loads the translation file for the current language using the URL and regexp provided at config time |      
 | [translate](#translate) | Return a promise. **THIS IS** the function you want to use |  
 
 ##### getCurrentLanguage
