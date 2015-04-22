@@ -3,7 +3,7 @@
 // Definitions by: Xavier Martin http://nolazybits.com | http://dev.webbymx.net
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
-declare module ng.i18n {
+declare module angular.i18n {
     interface II18nProvider {
         setUseBaseHrefTag (value : boolean): II18nProvider;
         setPathLanguageRegex (regex : RegExp): II18nProvider;
@@ -13,7 +13,7 @@ declare module ng.i18n {
         setFallback (object:Object): II18nProvider;
     }
 
-    interface II18nFactory {
+    interface II18n {
         getCurrentLanguage (): string;
         loadTranslationFile (lang: string): void;
         getTranslation (id: string): string;
