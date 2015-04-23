@@ -66,7 +66,7 @@ angular.module('angular-i18n', ['ng'])
 
                 if( !dictionary || !dictionary[lang] || !dictionary[lang].loaded )
                 {
-                    if( typeof fallback === "object" && fallback[value])
+                    if( fallback && typeof fallback === "object" && fallback[value])
                     {
                         translated = fallback[value];
                     }
