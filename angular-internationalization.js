@@ -1,5 +1,5 @@
 angular.module('angular-i18n', ['ng'])
-	//  create our localization service
+    //  create our localization service
     .provider('$i18n', [ function () {
         var pathLanguageRegex = /\|LANG\|/,
             pathLanguageURL = '/i18n/|LANG|.json',
@@ -115,6 +115,24 @@ angular.module('angular-i18n', ['ng'])
                 //  broadcast that the file has been loaded
                 $rootScope.$broadcast('i18nUpdated');
             };
+
+            this.addLanguageFile = function(lang, file) {
+                dictionary[lang] = {
+                    loading     : false,
+                    loaded      : true,
+                    translation : file
+                };
+                this.loadTranslationFileSucceed(file,lang);
+            };
+
+            this.removeLanguageFile = function(lang) {
+                if( dictionary[lang] && (dictionary[lang].loading === true || dictionary[lang].loaded === true) )
+                {
+                    return;
+                }
+
+            };
+
 
             this.loadTranslationFile = function (lang) {
                 if( dictionary[lang] && (dictionary[lang].loading === true || dictionary[lang].loaded === true) )
