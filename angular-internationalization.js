@@ -1,6 +1,7 @@
 angular.module('angular-i18n', ['ng'])
     //  create our localization service
-    .provider('$i18n', [function () {
+    .provider('$i18n', [function ()
+    {
         var pathLanguageRegex = /\|LANG\|/,
             pathLanguageURL = '/i18n/|LANG|.json',
             defaultLanguage = 'en-US',
@@ -9,74 +10,92 @@ angular.module('angular-i18n', ['ng'])
             baseHref = '',
             fallback = null;
 
-        this.setUseBaseHrefTag = function (value) {
+        this.setUseBaseHrefTag = function (value)
+        {
             useBaseHrefTag = value;
-            if (useBaseHrefTag) {
+            if (useBaseHrefTag)
+            {
                 var bases = document.getElementsByTagName('base');
-                if (bases.length > 0) {
+                if (bases.length > 0)
+                {
                     baseHref = bases[0].href;
                 }
             }
-            else {
+            else
+            {
                 baseHref = '';
             }
             return this;
         };
 
-        this.setPathLanguageRegex = function (regex) {
+        this.setPathLanguageRegex = function (regex)
+        {
             pathLanguageRegex = regex;
             return this;
         };
 
-        this.setPathLanguageURL = function (templateUrl) {
+        this.setPathLanguageURL = function (templateUrl)
+        {
             pathLanguageURL = templateUrl;
             return this;
         };
 
-        this.setDefaultLanguage = function (defaultLang) {
+        this.setDefaultLanguage = function (defaultLang)
+        {
             defaultLanguage = defaultLang;
             return this;
         };
 
-        this.setLanguage = function (lang) {
+        this.setLanguage = function (lang)
+        {
             language = lang;
             return this;
         };
 
-        this.setFallback = function (object) {
+        this.setFallback = function (object)
+        {
             fallback = object;
             return this;
         };
 
-        this.$get = ['$http', '$rootScope', '$window', '$q', '$timeout', function ($http, $rootScope, $window, $q, $timeout) {
+        this.$get = ['$http', '$rootScope', '$window', '$q', '$timeout', function ($http, $rootScope, $window, $q, $timeout)
+        {
             return new Localize($http, $rootScope, $window, $q, $timeout)
         }];
 
-        function Localize($http, $rootScope, $window, $q, $timeout) {
+        function Localize($http, $rootScope, $window, $q, $timeout)
+        {
             //  array to hold the localized resource string entries
             var dictionary = {};
             var promises = {};
 
-            var translateInternal = function (value, lang) {
+            var translateInternal = function (value, lang)
+            {
                 var placeholders = [];
                 var translated;
 
-                if (!dictionary || !dictionary[lang] || !dictionary[lang].loaded) {
-                    if (fallback && typeof fallback === "object" && fallback[value]) {
+                if (!dictionary || !dictionary[lang] || !dictionary[lang].loaded)
+                {
+                    if (fallback && typeof fallback === "object" && fallback[value])
+                    {
                         translated = fallback[value];
                     }
                 }
-                else {
+                else
+                {
                     translated = dictionary[lang].translation[value];
                 }
 
-                for (var i = 2; i < arguments.length; i++) {
+                for (var i = 2; i < arguments.length; i++)
+                {
                     placeholders.push(arguments[i]);
                 }
-                if (translated === null) {
+                if (translated === null)
+                {
                     translated = sprintf(value, placeholders);
                 }
-                else {
+                else
+                {
                     translated = sprintf(translated, placeholders);
                 }
 
@@ -84,20 +103,24 @@ angular.module('angular-i18n', ['ng'])
             };
 
             //  use the $window service to get the language of the user's browser
-            this.getCurrentLanguage = function () {
+            this.getCurrentLanguage = function ()
+            {
                 return language || $window.navigator.userLanguage || $window.navigator.language || defaultLanguage;
             };
 
             //  loading translation file for current language succceed
-            this.loadTranslationFileSucceed = function (data, lang) {
+            this.loadTranslationFileSucceed = function (data, lang)
+            {
                 //  store the returned array in the dictionary
                 dictionary[lang].translation = data;
                 dictionary[lang].loading = false;
                 dictionary[lang].loaded = true;
 
                 //  loop into any promises yet to be resolved for this language
-                for (var promiseObject in promises[lang]) {
-                    if (promises[lang].hasOwnProperty(promiseObject)) {
+                for (var promiseObject in promises[lang])
+                {
+                    if (promises[lang].hasOwnProperty(promiseObject))
+                    {
                         promises[lang][promiseObject].deferrer.resolve(translateInternal.apply(this, promises[lang][promiseObject].arguments));
                         delete promises[lang][promiseObject];
                     }
@@ -107,7 +130,8 @@ angular.module('angular-i18n', ['ng'])
                 $rootScope.$broadcast('i18nUpdated');
             };
 
-            this.addLanguageFile = function (lang, file) {
+            this.addLanguageFile = function (lang, file)
+            {
                 dictionary[lang] = {
                     loading: false,
                     loaded: true,
@@ -116,16 +140,19 @@ angular.module('angular-i18n', ['ng'])
                 this.loadTranslationFileSucceed(file, lang);
             };
 
-            this.removeLanguageFile = function (lang) {
-                if (dictionary[lang] && (dictionary[lang].loading === true || dictionary[lang].loaded === true)) {
+            this.removeLanguageFile = function (lang)
+            {
+                if (dictionary[lang] && (dictionary[lang].loading === true || dictionary[lang].loaded === true))
+                {
                     return;
                 }
                 delete dictionary[lang];
             };
 
-
-            this.loadTranslationFile = function (lang) {
-                if (dictionary[lang] && (dictionary[lang].loading === true || dictionary[lang].loaded === true)) {
+            this.loadTranslationFile = function (lang)
+            {
+                if (dictionary[lang] && (dictionary[lang].loading === true || dictionary[lang].loaded === true))
+                {
                     return;
                 }
 
@@ -144,18 +171,22 @@ angular.module('angular-i18n', ['ng'])
 
                 //  request the resource file
                 $http({method: "GET", url: url, cache: false})
-                    .success(function (data, status, headers, config) {
+                    .success(function (data, status, headers, config)
+                    {
                         self.loadTranslationFileSucceed(data, lang)
                     })
-                    .error(function () {
+                    .error(function ()
+                    {
                         //  the request failed set the url to the english resource file
                         var url2 = baseHref + pathLanguageURL.replace(pathLanguageRegex, defaultLanguage.replace('-', '_'));
                         //  request the default resource file
                         $http({method: "GET", url: url2, cache: false})
-                            .success(function (data, status, headers, config) {
+                            .success(function (data, status, headers, config)
+                            {
                                 self.loadTranslationFileSucceed(data, lang)
                             })
-                            .error(function () {
+                            .error(function ()
+                            {
                                 deferrer.reject("Could not load translation files " + url + " or " + url2)
                             });
                     }
@@ -163,13 +194,15 @@ angular.module('angular-i18n', ['ng'])
 
             };
 
-            this.getTranslation = function (value) {
+            this.getTranslation = function (value)
+            {
                 var args = Array.prototype.slice.call(arguments);
                 args.splice(1, 0, this.getCurrentLanguage());
                 return translateInternal.apply(this, args);
             };
 
-            this.translate = function (value) {
+            this.translate = function (value)
+            {
                 /*                // Support changing of language
                  if($rootScope.appconfig.user.lang && localize.language != $rootScope.appconfig.user.lang){
                  localize.language = $rootScope.appconfig.user.lang;
@@ -184,7 +217,8 @@ angular.module('angular-i18n', ['ng'])
                 // add the language to the argument array
                 args.splice(1, 0, lang);
 
-                var addPromise = function (args, instant) {
+                var addPromise = function (args, instant)
+                {
 
                     instant = typeof instant !== 'undefined' ? instant : false;
 
@@ -192,23 +226,28 @@ angular.module('angular-i18n', ['ng'])
                         promise = null;
 
                     //  a promise exists for this value for this language returns it
-                    if (promises[lang] && promises[lang][value]) {
+                    if (promises[lang] && promises[lang][value])
+                    {
                         return promises[lang][value].deferrer;
                     }
                     //  no promise exists for this value, create it
-                    else {
+                    else
+                    {
                         deferrer = $q.defer();
                         promise = deferrer.promise;
-                        promise.success = function (fn) {
+                        promise.success = function (fn)
+                        {
                             promise.then(fn);
                             return promise;
                         };
-                        promise.error = function (fn) {
+                        promise.error = function (fn)
+                        {
                             promise.then(null, fn);
                             return promise;
                         };
 
-                        if (!instant) {
+                        if (!instant)
+                        {
                             promises[lang][value] = {arguments: args, deferrer: deferrer};
                         }
                         return deferrer;
@@ -216,13 +255,15 @@ angular.module('angular-i18n', ['ng'])
                 };
 
                 //  we haven't load the file yet
-                if (!dictionary[lang] || (!dictionary[lang].loading && !dictionary[lang].loaded)) {
+                if (!dictionary[lang] || (!dictionary[lang].loading && !dictionary[lang].loaded))
+                {
                     this.loadTranslationFile(lang);
                 }
 
                 //  we have called the loading process but we are still waiting on the file
                 if (!dictionary[lang] || (!dictionary[lang].loading && !dictionary[lang].loaded)
-                    || (dictionary[lang] && dictionary[lang].loading)) {
+                    || (dictionary[lang] && dictionary[lang].loading))
+                {
                     //deferrer = addPromise(args);
                     //deferrer.reject();
                     return addPromise(args).promise;
@@ -232,7 +273,8 @@ angular.module('angular-i18n', ['ng'])
                 if (dictionary[lang]
                     && !dictionary[lang].loading
                     && dictionary[lang].loaded
-                    && typeof dictionary[lang].translation === "object") {
+                    && typeof dictionary[lang].translation === "object")
+                {
                     deferrer = addPromise(args, true);
                     deferrer.resolve(translateInternal.apply(this, args));
                     return deferrer.promise;
@@ -241,11 +283,14 @@ angular.module('angular-i18n', ['ng'])
         }
     }])
 
-    .filter('i18n', ['$i18n', function ($i18n) {
+    .filter('i18n', ['$i18n', function ($i18n)
+    {
         var currentLanguage = null;
-        var myFilter = function (input) {
+        var myFilter = function (input)
+        {
             var translation = $i18n.getTranslation.apply($i18n, arguments);
-            if (currentLanguage === null || currentLanguage !== $i18n.getCurrentLanguage()) {
+            if (currentLanguage === null || currentLanguage !== $i18n.getCurrentLanguage())
+            {
                 currentLanguage = $i18n.getCurrentLanguage();
                 $i18n.loadTranslationFile(currentLanguage);
             }
@@ -255,16 +300,19 @@ angular.module('angular-i18n', ['ng'])
         return myFilter;
     }])
 
-    .directive('i18n', ['$i18n', function ($i18n) {
+    .directive('i18n', ['$i18n', function ($i18n)
+    {
         return {
             restrict: "A",
-            link: function (scope, elm, attrs) {
+            link: function (scope, elm, attrs)
+            {
                 //  construct the tag to insert into the element
                 var tag = $i18n.getTranslation(attrs.i18n);
                 elm.text(tag);
 
                 $i18n.translate(attrs.i18n)
-                    .success(function (translated) {
+                    .success(function (translated)
+                    {
                         elm.text(translated)
                     });
             }
