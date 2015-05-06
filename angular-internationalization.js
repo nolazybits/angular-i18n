@@ -116,7 +116,7 @@ angular.module('angular-i18n', ['ng'])
                 this.loadTranslationFileSucceed(file, lang);
             };
 
-            this.removeLanguage = function (lang) {
+            this.removeLanguageFile = function (lang) {
                 if (dictionary[lang] && (dictionary[lang].loading === true || dictionary[lang].loaded === true)) {
                     return;
                 }
