@@ -14,10 +14,10 @@ declare module angular.i18n {
     }
 
     interface II18n {
-        getCurrentLanguage (): string;
-        loadTranslationFile (lang:string): void;
-        getTranslation (id:string): string;
-        addLanguageFile(lang:string, file:Object):void;
+	    addLanguageFile(lang:string, file:Object):void;
+	    getCurrentLanguage (): string;
+	    getTranslation (id:string): string;
+	    loadTranslationFile (lang:string): void;
         removeLanguage(lang:string);
         translate (id:string): II18nPromise;
     }

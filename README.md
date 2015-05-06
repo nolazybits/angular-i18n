@@ -99,10 +99,15 @@ The factory can use all the previous method described in the [provider](#provide
 
 | Methods | Description |    
 | :-------| ----------- |    
+| [addLanguageFile](#addlanguagefile) | add a file directly to i18n. Used if want to download the file yourself |
 | [getCurrentLanguage](#getcurrentlanguage) | The language to use |      
-| [getTranslation](#gettranslation) | Translate instantaneously, used by the filter |      
+| [getTranslation](#gettranslation) | Translate instantaneously, used by the filter |            
 | [loadTranslationFile](#loadtranslationfile) | Loads the translation file for the current language using the URL and regexp provided at config time |      
 | [translate](#translate) | Return a promise. **THIS IS** the function you want to use |  
+| [removeLanguage](#removelanguage) | Remove a language |  
+
+##### addLanguageFile
+> add a file directly to i18n. Used if want to download the file yourself 
 
 ##### getCurrentLanguage
 > Returns the current language.  
@@ -119,6 +124,9 @@ This will return a translation instantaneously. So if the translation file is no
 
 ##### translate
 > Return a promise. **THIS IS** the function you want to use 
+
+##### removeLanguage
+> Remove a language 
 
 This will return a promise that can be used to update your scope, model, ...
 
