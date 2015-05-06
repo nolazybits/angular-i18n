@@ -18,6 +18,7 @@ declare module angular.i18n {
         loadTranslationFile (lang:string): void;
         getTranslation (id:string): string;
         addLanguageFile(lang:string, file:Object):void;
+        removeLanguage(lang:string);
         translate (id:string): II18nPromise;
     }
 
