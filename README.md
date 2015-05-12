@@ -122,13 +122,13 @@ This will return a translation instantaneously. So if the translation file is no
 ##### loadTranslationFile
 > Loads the translation file for the current language using the URL and regexp provided at config time 
 
-##### translate
-> Return a promise. **THIS IS** the function you want to use 
-
 ##### removeLanguage
 > Remove a language 
 
-This will return a promise that can be used to update your scope, model, ...
+return void
+
+##### translate
+> Return a promise. **THIS IS** the function you want to use 
 
 #### Filter 'i18n'
 ```
