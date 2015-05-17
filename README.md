@@ -8,7 +8,8 @@ This module ```angular-i18n``` has dependencies resolved with bower on:
 ### Usage
 
 This module has:
-* a provider ($i18n) 
+* a provider ($i18nProvider) 
+* a factory ($i18n) 
 * a filter (i18n)
 * a directive (i18n).
 

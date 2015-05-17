@@ -1,3 +1,4 @@
+* 2015-05-13   v1.0.10  reject promise when file loading fails.
 * 2015-05-13   v1.0.9   fix typescript typings
 * 2015-05-06   v1.0.8   Updated bower.json file 
 * 2015-05-06   v1.0.7   Added addLanguageFile and removeLanguage. 
