@@ -183,11 +183,22 @@ angular.module('angular-i18n', ['ng'])
                         $http({method: "GET", url: url2, cache: false})
                             .success(function (data, status, headers, config)
                             {
-                                self.loadTranslationFileSucceed(data, lang)
+                                self.loadTranslationFileSucceed(data, lang);
                             })
                             .error(function ()
                             {
-                                deferrer.reject("Could not load translation files " + url + " or " + url2)
+                                //  loop into any promises yet to be resolved for this language
+                                for (var promiseObject in promises[lang])
+                                {
+                                    if (promises[lang].hasOwnProperty(promiseObject))
+                                    {
+                                        promises[lang][promiseObject].deferrer.reject("Could not load translation files " + url + " or " + url2);
+                                        dictionary[lang].loading = false;
+                                        dictionary[lang].loaded = true;
+                                        dictionary[lang].translation = null;
+                                        delete promises[lang][promiseObject];
+                                    }
+                                }
                             });
                     }
                 );
@@ -203,12 +214,6 @@ angular.module('angular-i18n', ['ng'])
 
             this.translate = function (value)
             {
-                /*                // Support changing of language
-                 if($rootScope.appconfig.user.lang && localize.language != $rootScope.appconfig.user.lang){
-                 localize.language = $rootScope.appconfig.user.lang;
-                 localize.resourceFileLoaded = false;
-                 }*/
-
                 //  define the language used when translation was called
                 var lang = this.getCurrentLanguage(),
                     deferrer = null,
@@ -230,6 +235,7 @@ angular.module('angular-i18n', ['ng'])
                     {
                         return promises[lang][value].deferrer;
                     }
+
                     //  no promise exists for this value, create it
                     else
                     {
@@ -264,19 +270,26 @@ angular.module('angular-i18n', ['ng'])
                 if (!dictionary[lang] || (!dictionary[lang].loading && !dictionary[lang].loaded)
                     || (dictionary[lang] && dictionary[lang].loading))
                 {
-                    //deferrer = addPromise(args);
-                    //deferrer.reject();
                     return addPromise(args).promise;
                 }
 
-                //  make sure the dictionary has valid data
+                //  the translation file finished loading
                 if (dictionary[lang]
                     && !dictionary[lang].loading
-                    && dictionary[lang].loaded
-                    && typeof dictionary[lang].translation === "object")
+                    && dictionary[lang].loaded)
                 {
                     deferrer = addPromise(args, true);
-                    deferrer.resolve(translateInternal.apply(this, args));
+                    //  unsuccessfully
+                    if( dictionary[lang].translation === null
+                        || typeof dictionary[lang].translation !== "object")
+                    {
+                        deferrer.reject("The translation file doesn't exists");
+                    }
+                    //  successfully
+                    else
+                    {
+                        deferrer.resolve(translateInternal.apply(this, args));
+                    }
                     return deferrer.promise;
                 }
             }
