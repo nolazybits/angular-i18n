@@ -1,3 +1,4 @@
+* 2015-05-13   v1.0.11  Added flag to control if dictionary is appended(default) or rewritten with a new language entry
 * 2015-05-13   v1.0.10  reject promise when file loading fails.
 * 2015-05-13   v1.0.9   fix typescript typings
 * 2015-05-06   v1.0.8   Updated bower.json file 
