@@ -1,7 +1,14 @@
 {
   "name": "angular-internationalization",
-  "version": "1.0.6",
-  "repository": {
+  "description": "angular internationalization (i18n) provider, service, filter and directive",
+  "version": "1.0.9",
+  "main": "angular-internationalization.js",
+  "license": "MIT",
+  "keyword": ["angular", "internationalization", "i18n"],
+  "authors": [
+    {"name": "Xavier Martin", "email": "nolazybits+angulari18n@gmail.com", "homepage": "http://nolazybits.com"}
+  ],
+   "repository": {
     "type": "git",
     "url": "git://github.com/nolazybits/angular-i18n"
   },
