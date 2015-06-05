@@ -104,8 +104,9 @@ The factory can use all the previous method described in the [provider](#provide
 | [getCurrentLanguage](#getcurrentlanguage) | The language to use |      
 | [getTranslation](#gettranslation) | Translate instantaneously, used by the filter |            
 | [loadTranslationFile](#loadtranslationfile) | Loads the translation file for the current language using the URL and regexp provided at config time |      
-| [translate](#translate) | Return a promise. **THIS IS** the function you want to use |  
-| [removeLanguage](#removelanguage) | Remove a language |  
+| [translate](#translate) | Return a promise. **THIS MAY BE** the function you want to use |
+| [translateNow](#translateNow) | Return a string. **THIS MIGHT BE** the function you want to use |
+| [removeLanguage](#removelanguage) | Remove a language |
 
 ##### addLanguageFile
 > add a file directly to i18n. Used if want to download the file yourself 
@@ -129,7 +130,10 @@ This will return a translation instantaneously. So if the translation file is no
 return void
 
 ##### translate
-> Return a promise. **THIS IS** the function you want to use 
+> Return a promise. **THIS MAY BE** the function you want to use
+
+##### translateNow
+> Return a string. **THIS MIGHT BE** the function you want to use
 
 #### Filter 'i18n'
 ```
