@@ -58,12 +58,12 @@ angular.module('angular-i18n', ['ng'])
             return this;
         };
 
-        this.$get = ['$http', '$rootScope', '$window', '$q', '$timeout', function ($http, $rootScope, $window, $q, $timeout)
+        this.$get = ['$http', '$rootScope', '$window', '$q', '$timeout', '$filter', function ($http, $rootScope, $window, $q, $timeout, $filter)
         {
-            return new Localize($http, $rootScope, $window, $q, $timeout)
+            return new Localize($http, $rootScope, $window, $q, $timeout, $filter)
         }];
 
-        function Localize($http, $rootScope, $window, $q, $timeout)
+        function Localize($http, $rootScope, $window, $q, $timeout, $filter)
         {
             //  array to hold the localized resource string entries
             var dictionary = {};
@@ -292,6 +292,10 @@ angular.module('angular-i18n', ['ng'])
                     }
                     return deferrer.promise;
                 }
+            };
+            this.translateNow = function (value)
+            {
+                return $filter('i18n')(value);
             }
         }
     }])
