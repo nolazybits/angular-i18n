@@ -108,7 +108,7 @@ The factory can use all the previous method described in the [provider](#provide
 | [removeLanguage](#removelanguage) | Remove a language |  
 
 ##### addLanguageFile
-> add a file directly to i18n. Used if want to download the file yourself 
+> add a file directly to i18n. Used if want to download the file yourself. Can specify clearing the dictionary first or adding to it  
 
 ##### getCurrentLanguage
 > Returns the current language.  
@@ -121,7 +121,7 @@ The returned value check first the language property (can be set at runtime), th
 This will return a translation instantaneously. So if the translation file is not loaded yet, this function will return either the fallback translation or null.
 
 ##### loadTranslationFile
-> Loads the translation file for the current language using the URL and regexp provided at config time 
+> Loads the translation file for the current language using the URL and regexp provided at config time. Can specify clearing the dictionary first or adding to it  
 
 ##### removeLanguage
 > Remove a language 

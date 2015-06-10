@@ -109,10 +109,25 @@ angular.module('angular-i18n', ['ng'])
             };
 
             //  loading translation file for current language succceed
-            this.loadTranslationFileSucceed = function (data, lang)
+            this.loadTranslationFileSucceed = function (data, lang, clearFirst)
             {
-                //  store the returned array in the dictionary
-                dictionary[lang].translation = data;
+                var clearExisting = (typeof clearFirst === 'undefined') ? false : clearFirst;
+
+                //  clear the dictionary entries and replace or update existing ?
+                if (clearExisting)
+                {
+                    dictionary[lang].translation = data;
+                }
+                else
+                {
+                    for (var item in data)
+                    {
+                        if (data.hasOwnProperty(item))
+                        {
+                            dictionary[lang].translation[item] = data[item];
+                        }
+                    }
+                }
                 dictionary[lang].loading = false;
                 dictionary[lang].loaded = true;
 
@@ -149,8 +164,9 @@ angular.module('angular-i18n', ['ng'])
                 delete dictionary[lang];
             };
 
-            this.loadTranslationFile = function (lang)
+            this.loadTranslationFile = function (lang, clearFirst)
             {
+                var clearExisting = (typeof clearFirst === 'undefined') ? false : clearFirst;
                 if (dictionary[lang] && (dictionary[lang].loading === true || dictionary[lang].loaded === true))
                 {
                     return;
@@ -173,7 +189,7 @@ angular.module('angular-i18n', ['ng'])
                 $http({method: "GET", url: url, cache: false})
                     .success(function (data, status, headers, config)
                     {
-                        self.loadTranslationFileSucceed(data, lang)
+                        self.loadTranslationFileSucceed(data, lang, clearExisting)
                     })
                     .error(function ()
                     {
@@ -183,7 +199,7 @@ angular.module('angular-i18n', ['ng'])
                         $http({method: "GET", url: url2, cache: false})
                             .success(function (data, status, headers, config)
                             {
-                                self.loadTranslationFileSucceed(data, lang);
+                                self.loadTranslationFileSucceed(data, lang, clearExisting);
                             })
                             .error(function ()
                             {
@@ -280,7 +296,7 @@ angular.module('angular-i18n', ['ng'])
                 {
                     deferrer = addPromise(args, true);
                     //  unsuccessfully
-                    if( dictionary[lang].translation === null
+                    if (dictionary[lang].translation === null
                         || typeof dictionary[lang].translation !== "object")
                     {
                         deferrer.reject("The translation file doesn't exists");
