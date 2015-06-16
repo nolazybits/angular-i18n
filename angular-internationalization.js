@@ -1,311 +1,391 @@
 angular.module('angular-i18n', ['ng'])
     //  create our localization service
-    .provider('$i18n', [function ()
-    {
-        var pathLanguageRegex = /\|LANG\|/,
-            pathLanguageURL = '/i18n/|LANG|.json',
-            defaultLanguage = 'en-US',
-            language = null,
-            useBaseHrefTag = false,
-            baseHref = '',
-            fallback = null;
+    .provider('$i18n', [function () {
+        return {
+            _fileURL: '/i18n/|LANG|_|PART|.json',
+            _fileURLLanguageRegex: /\|LANG\|/,
+            _fileURLPartRegex: /\|PART\|/,
+            _allowPartialFileLoading: false,
+            _useBaseHrefTag: false,
+            _baseHref: '',
+            _defaultLanguage: 'en-US',
+            _language: null,
+            _fallback: null,
 
-        this.setUseBaseHrefTag = function (value)
-        {
-            useBaseHrefTag = value;
-            if (useBaseHrefTag)
-            {
-                var bases = document.getElementsByTagName('base');
-                if (bases.length > 0)
-                {
-                    baseHref = bases[0].href;
-                }
-            }
-            else
-            {
-                baseHref = '';
-            }
-            return this;
-        };
+            get fileURL() {
+                return this._fileURL;
+            },
+            set fileURL(url) {
+                this._fileURL = url;
+                return this;
+            },
 
-        this.setPathLanguageRegex = function (regex)
-        {
-            pathLanguageRegex = regex;
-            return this;
-        };
+            get fileURLLanguageRegex() {
+                return this._fileURLLanguageRegex;
+            },
+            set fileURLLanguageRegex(regex) {
+                this._fileURLLanguageRegex = regex;
+                return this;
+            },
 
-        this.setPathLanguageURL = function (templateUrl)
-        {
-            pathLanguageURL = templateUrl;
-            return this;
-        };
+            get fileURLPartRegex() {
+                return this._fileURLPartRegex;
+            },
+            set fileURLPartRegex(regex) {
+                this._fileURLPartRegex = regex;
+                return this;
+            },
 
-        this.setDefaultLanguage = function (defaultLang)
-        {
-            defaultLanguage = defaultLang;
-            return this;
-        };
-
-        this.setLanguage = function (lang)
-        {
-            language = lang;
-            return this;
-        };
-
-        this.setFallback = function (object)
-        {
-            fallback = object;
-            return this;
-        };
-
-        this.$get = ['$http', '$rootScope', '$window', '$q', '$timeout', function ($http, $rootScope, $window, $q, $timeout)
-        {
-            return new Localize($http, $rootScope, $window, $q, $timeout)
-        }];
-
-        function Localize($http, $rootScope, $window, $q, $timeout)
-        {
-            //  array to hold the localized resource string entries
-            var dictionary = {};
-            var promises = {};
-
-            var translateInternal = function (value, lang)
-            {
-                var placeholders = [];
-                var translated;
-
-                if (!dictionary || !dictionary[lang] || !dictionary[lang].loaded)
-                {
-                    if (fallback && typeof fallback === "object" && fallback[value])
-                    {
-                        translated = fallback[value];
+            get useBaseHrefTag() {
+                return this._useBaseHrefTag;
+            },
+            set useBaseHrefTag(value) {
+                this._useBaseHrefTag = value;
+                if (this._useBaseHrefTag) {
+                    var bases = document.getElementsByTagName('base');
+                    if (bases.length > 0) {
+                        this._baseHref = bases[0].href;
                     }
                 }
-                else
-                {
-                    translated = dictionary[lang].translation[value];
+                else {
+                    this._baseHref = '';
                 }
+                return this;
+            },
+            get baseHref() {
+                return this._baseHref;
+            },
 
-                for (var i = 2; i < arguments.length; i++)
-                {
-                    placeholders.push(arguments[i]);
-                }
-                if (translated === null)
-                {
-                    translated = sprintf(value, placeholders);
-                }
-                else
-                {
-                    translated = sprintf(translated, placeholders);
-                }
+            get defaultLanguage() {
+                return this._defaultLanguage;
+            },
+            set defaultLanguage(lang) {
+                this._defaultLanguage = lang;
+                return this;
+            },
 
-                return translated;
-            };
+            get language() {
+                return this._language;
+            },
+            set language(lang) {
+                this._language = lang;
+                return this;
+            },
 
-            //  use the $window service to get the language of the user's browser
-            this.getCurrentLanguage = function ()
-            {
-                return language || $window.navigator.userLanguage || $window.navigator.language || defaultLanguage;
-            };
+            get allowPartialFileLoading() {
+                return this._allowPartialFileLoading;
+            },
+            set allowPartialFileLoading(value) {
+                this._allowPartialFileLoading = value;
+                return this;
+            },
 
-            //  loading translation file for current language succceed
-            this.loadTranslationFileSucceed = function (data, lang)
-            {
-                //  store the returned array in the dictionary
-                dictionary[lang].translation = data;
-                dictionary[lang].loading = false;
-                dictionary[lang].loaded = true;
+            get fallback() {
+                return this._fallback;
+            },
+            set fallback(json) {
+                this._fallback = json;
+                return this;
+            },
 
-                //  loop into any promises yet to be resolved for this language
-                for (var promiseObject in promises[lang])
-                {
-                    if (promises[lang].hasOwnProperty(promiseObject))
-                    {
-                        promises[lang][promiseObject].deferrer.resolve(translateInternal.apply(this, promises[lang][promiseObject].arguments));
-                        delete promises[lang][promiseObject];
-                    }
-                }
+            $get: ['$http', '$rootScope', '$window', '$q',
+                function ($http, $rootScope, $window, $q) {
+                    var _this = this;
+                    return {
+                        _dictionary: {},
+                        _promises: {},
 
-                //  broadcast that the file has been loaded
-                $rootScope.$broadcast('i18nUpdated');
-            };
+                        get language() {
+                            return _this.language || $window.navigator.userLanguage
+                                || $window.navigator.language || _this.defaultLanguage;
+                        },
+                        set language(lang) {
+                            _this.language = lang;
+                            return this;
+                        },
 
-            this.addLanguageFile = function (lang, file)
-            {
-                dictionary[lang] = {
-                    loading: false,
-                    loaded: true,
-                    translation: file
-                };
-                this.loadTranslationFileSucceed(file, lang);
-            };
-
-            this.removeLanguage = function (lang)
-            {
-                if (dictionary[lang] && (dictionary[lang].loading === true || dictionary[lang].loaded === true))
-                {
-                    return;
-                }
-                delete dictionary[lang];
-            };
-
-            this.loadTranslationFile = function (lang)
-            {
-                if (dictionary[lang] && (dictionary[lang].loading === true || dictionary[lang].loaded === true))
-                {
-                    return;
-                }
-
-                var url = baseHref + pathLanguageURL.replace(pathLanguageRegex, lang.replace('-', '_')),
-                    self = this;
-
-                //  create the translation object
-                dictionary[lang] = {
-                    loading: true,
-                    loaded: false,
-                    translation: null
-                };
-
-                //  we will store the promise here.
-                promises[lang] = {};
-
-                //  request the resource file
-                $http({method: "GET", url: url, cache: false})
-                    .success(function (data, status, headers, config)
-                    {
-                        self.loadTranslationFileSucceed(data, lang)
-                    })
-                    .error(function ()
-                    {
-                        //  the request failed set the url to the english resource file
-                        var url2 = baseHref + pathLanguageURL.replace(pathLanguageRegex, defaultLanguage.replace('-', '_'));
-                        //  request the default resource file
-                        $http({method: "GET", url: url2, cache: false})
-                            .success(function (data, status, headers, config)
+                        _checkSectionParameter: function(section)
+                        {
+                            section = angular.isDefined(section) ? section : 'all';
+                            if( !angular.isString(section) )
                             {
-                                self.loadTranslationFileSucceed(data, lang);
-                            })
-                            .error(function ()
+                                throw new Error('section parameter must be of type string');
+                            }
+
+                            if( !_this.allowPartialFileLoading && section !== 'all')
                             {
-                                //  loop into any promises yet to be resolved for this language
-                                for (var promiseObject in promises[lang])
-                                {
-                                    if (promises[lang].hasOwnProperty(promiseObject))
-                                    {
-                                        promises[lang][promiseObject].deferrer.reject("Could not load translation files " + url + " or " + url2);
-                                        dictionary[lang].loading = false;
-                                        dictionary[lang].loaded = true;
-                                        dictionary[lang].translation = null;
-                                        delete promises[lang][promiseObject];
-                                    }
+                                throw new Error('Partial loading has been disable by the provider.');
+                            }
+                            return section;
+                        },
+
+                        _getLanguageAndTranslate: function (value) {
+                            var args = Array.prototype.slice.call(arguments);
+                            args.splice(1, 0, this.language);
+                            return this._translate.apply(this, args);
+                        },
+
+                        _translate: function (value, lang, section) {
+                            var placeholders = [],
+                                translated;
+
+                            section = this._checkSectionParameter(section);
+
+                            if (!this._dictionary || !this._dictionary[lang] ) {
+                                if (_this.fallback && typeof _this.fallback === "object" && _this.fallback[value]) {
+                                    translated = _this.fallback[value];
                                 }
-                            });
-                    }
-                );
+                            }
+                            else {
+                                if( !this._dictionary[lang].sections[section] )
+                                {
+                                    throw new Error('The section you are trying to access do not exsists');
+                                }
+                                if( !this._dictionary[lang].sections[section].translation[value] )
+                                {
+                                    throw new Error('The translation for \''+ value +'\' in the section \''
+                                        + section +'\' for \''+ lang +'\' does not exists');
+                                }
+                                translated = this._dictionary[lang].sections[section].translation[value];
+                            }
 
-            };
+                            for (var i = 2; i < arguments.length; i++) {
+                                placeholders.push(arguments[i]);
+                            }
 
-            this.getTranslation = function (value)
-            {
-                var args = Array.prototype.slice.call(arguments);
-                args.splice(1, 0, this.getCurrentLanguage());
-                return translateInternal.apply(this, args);
-            };
+                            if (translated === null) {
+                                translated = sprintf(value, placeholders);
+                            }
+                            else {
+                                translated = sprintf(translated, placeholders);
+                            }
 
-            this.translate = function (value)
-            {
-                //  define the language used when translation was called
-                var lang = this.getCurrentLanguage(),
-                    deferrer = null,
-                    args = Array.prototype.slice.call(arguments);
+                            return translated;
+                        },
 
-                // add the language to the argument array
-                args.splice(1, 0, lang);
+                        addLanguageFile: function (lang, json, section) {
+                            section = angular.isDefined(section) ? section : 'all';
 
-                var addPromise = function (args, instant)
-                {
+                            if( !this._dictionary[lang] )
+                            {
+                                this._dictionary[lang] =
+                                {
+                                    translation: null,
+                                    sections: {}
+                                }
+                            }
+                            this.loadTranslationFileSucceed(json, lang, section);
+                        },
 
-                    instant = typeof instant !== 'undefined' ? instant : false;
+                        removeLanguageFile: function (lang) {
+                            if (this._dictionary[lang] && (this._dictionary[lang].loading === true
+                                || this._dictionary[lang].loaded === true)) {
+                                return;
+                            }
+                            delete this._dictionary[lang];
+                        },
 
-                    var deferrer = null,
-                        promise = null;
+                        loadTranslationFile: function (lang, section) {
+                            var url,
+                                self = this;
 
-                    //  a promise exists for this value for this language returns it
-                    if (promises[lang] && promises[lang][value])
-                    {
-                        return promises[lang][value].deferrer;
-                    }
+                            section = this._checkSectionParameter(section);
 
-                    //  no promise exists for this value, create it
-                    else
-                    {
-                        deferrer = $q.defer();
-                        promise = deferrer.promise;
-                        promise.success = function (fn)
-                        {
-                            promise.then(fn);
-                            return promise;
-                        };
-                        promise.error = function (fn)
-                        {
-                            promise.then(null, fn);
-                            return promise;
-                        };
+                            if (this._dictionary[lang]
+                                && this._dictionary[lang].sections[section]
+                                && (this._dictionary[lang].sections[section].loading === true
+                                || this._dictionary[lang].sections[section].loaded === true)) {
+                                return;
+                            }
 
-                        if (!instant)
-                        {
-                            promises[lang][value] = {arguments: args, deferrer: deferrer};
+                            //  create the translation object
+                            if( !this._dictionary[lang] )
+                            {
+                                this._dictionary[lang] = {
+                                    sections: {}
+                                };
+                            }
+
+                            this._dictionary[lang].sections[section] = {
+                                loaded: false,
+                                loading: true,
+                                translation: null
+                            };
+
+                            //  we will store the promise here.
+                            this._promises[lang] = {};
+
+                            url = _this.fileURL.replace(_this.fileURLLanguageRegex, lang.replace('-', '_'));
+                            if( _this.allowPartialFileLoading )
+                            {
+                                if( url.indexOf(_this.fileURLPartRegex) === -1 )
+                                {
+                                    new Error('The file URL doesn\'t defined regex for partial loading');
+                                }
+                                url = url.replace(_this.fileURLPartRegex, section);
+                            }
+                            url = _this.baseHref + url;
+
+                            //  request the resource file
+                            return $http({method: "GET", url: url, cache: false})
+                                .success(function (data, status, headers, config) {
+                                    self.loadTranslationFileSucceed(data, lang, section);
+                                })
+                                .error(function () {
+                                    //  the request failed set the url to the english resource file
+                                    var url2 = _this.baseHref +
+                                        _this.fileURL.replace(
+                                            _this.fileURLLanguageRegex, _this.defaultLanguage.replace('-', '_')
+                                        );
+
+                                    //  request the default resource file
+                                    $http({method: "GET", url: url2, cache: false})
+                                        .success(function (data, status, headers, config) {
+                                            self.loadTranslationFileSucceed(data, lang, section);
+                                        })
+                                        .error(function () {
+                                            //  loop into any promises yet to be resolved for this language
+                                            for (var promiseObject in self._promises[lang]) {
+                                                if (self._promises[lang].hasOwnProperty(promiseObject)) {
+                                                    self._promises[lang][promiseObject]
+                                                        .deferrer
+                                                        .reject("Could not load translation files "
+                                                                + url + " or " + url2);
+                                                    self._dictionary[lang].sections = null;
+                                                    delete self._promises[lang][promiseObject];
+                                                }
+                                            }
+                                        });
+                                }
+                            );
+                        },
+
+                        //  loading translation file for current language succceed
+                        loadTranslationFileSucceed: function (data, lang, section) {
+                            var self = this,
+                                translation = {};
+
+                            section = this._checkSectionParameter(section);
+
+                            //  store the returned array in the dictionary
+                            self._dictionary[lang].sections[section] = {
+                                loading: true,
+                                loaded: false,
+                                translation: data
+                            };
+
+                            //  loop into any promises yet to be resolved for this language
+                            for (var promiseObject in self._promises[lang]) {
+                                if (self._promises[lang].hasOwnProperty(promiseObject)) {
+                                    self._promises[lang][promiseObject].deferrer.resolve(self._translate.apply(self, self._promises[lang][promiseObject].arguments));
+                                    delete self._promises[lang][promiseObject];
+                                }
+                            }
+
+                            //  broadcast that the file has been loaded
+                            $rootScope.$broadcast('i18nUpdated');
+                        },
+
+                        translate: function (value, section) {
+                            var self = this;
+
+                            section = this._checkSectionParameter(section);
+
+                            //  define the language used when translation was called
+                            var lang = self.language,
+                                deferrer = null,
+                                args = Array.prototype.slice.call(arguments);
+
+                            // add the language to the argument array
+                            args.splice(1, 0, lang);
+                            // add the section to the argument array
+                            args.splice(2, 1, section);
+
+                            console.log('args');
+                            console.log(args);
+
+                            var addPromise = function (args, instant) {
+                                instant = typeof instant !== 'undefined' ? instant : false;
+
+                                var deferrer = null,
+                                    promise = null;
+
+                                //  a promise exists for this value for this language returns it
+                                if (self._promises[lang] && self._promises[lang][value]) {
+                                    return self._promises[lang][value].deferrer;
+                                }
+
+                                //  no promise exists for this value, create it
+                                else {
+                                    deferrer = $q.defer();
+                                    promise = deferrer.promise;
+                                    promise.success = function (fn) {
+                                        promise.then(fn);
+                                        return promise;
+                                    };
+                                    promise.error = function (fn) {
+                                        promise.then(null, fn);
+                                        return promise;
+                                    };
+
+                                    if (!instant) {
+                                        self._promises[lang][value] = {arguments: args, deferrer: deferrer};
+                                    }
+                                    return deferrer;
+                                }
+                            };
+
+                            //  we haven't load the file yet
+                            if (!this._dictionary[lang]
+                                || (!this._dictionary[lang].sections[section])
+                                || (!this._dictionary[lang].sections[section].loading
+                                    && !this._dictionary[lang].sections[section].loaded)) {
+                                this.loadTranslationFile(lang, section);
+                            }
+
+                            //  we have called the loading process but we are still waiting on the file
+                            if (this._dictionary[lang].sections[section].loading) {
+                                return addPromise(args).promise;
+                            }
+
+                            //  the translation file finished loading
+                            if (this._dictionary[lang]
+                                && !this._dictionary[lang].sections[section].loading
+                                && this._dictionary[lang].sections[section].loaded) {
+                                deferrer = addPromise(args, true);
+                                //  unsuccessfully
+                                if (this._dictionary[lang].sections[section].translation === null
+                                    || typeof this._dictionary[lang].sections[section].translation !== "object") {
+                                    deferrer.reject("The translation file doesn't exists");
+                                }
+                                //  successfully
+                                else {
+                                    deferrer.resolve(self._translate.apply(self, args));
+                                }
+                                return deferrer.promise;
+                            }
                         }
-                        return deferrer;
-                    }
-                };
-
-                //  we haven't load the file yet
-                if (!dictionary[lang] || (!dictionary[lang].loading && !dictionary[lang].loaded))
-                {
-                    this.loadTranslationFile(lang);
-                }
-
-                //  we have called the loading process but we are still waiting on the file
-                if (!dictionary[lang] || (!dictionary[lang].loading && !dictionary[lang].loaded)
-                    || (dictionary[lang] && dictionary[lang].loading))
-                {
-                    return addPromise(args).promise;
-                }
-
-                //  the translation file finished loading
-                if (dictionary[lang]
-                    && !dictionary[lang].loading
-                    && dictionary[lang].loaded)
-                {
-                    deferrer = addPromise(args, true);
-                    //  unsuccessfully
-                    if( dictionary[lang].translation === null
-                        || typeof dictionary[lang].translation !== "object")
-                    {
-                        deferrer.reject("The translation file doesn't exists");
-                    }
-                    //  successfully
-                    else
-                    {
-                        deferrer.resolve(translateInternal.apply(this, args));
-                    }
-                    return deferrer.promise;
-                }
-            }
-        }
+                    };
+                }]
+        };
     }])
 
-    .filter('i18n', ['$i18n', function ($i18n)
-    {
+    .filter('i18n', ['$i18n', function ($i18n) {
         var currentLanguage = null;
-        var myFilter = function (input)
-        {
-            var translation = $i18n.getTranslation.apply($i18n, arguments);
-            if (currentLanguage === null || currentLanguage !== $i18n.getCurrentLanguage())
-            {
-                currentLanguage = $i18n.getCurrentLanguage();
-                $i18n.loadTranslationFile(currentLanguage);
+        var myFilter = function (translationId, section) {
+            if (!angular.isString(translationId)) {
+                throw new Error('i18n filter error: The translation id must be a string');
+            }
+
+            if (angular.isDefined(section) && !angular.isString(section)) {
+                throw new Error('i18n filter error: The section id must be a string');
+            }
+            var translation = $i18n._getLanguageAndTranslate.apply($i18n, arguments);
+            if (currentLanguage === null || currentLanguage !== $i18n.language) {
+                currentLanguage = $i18n.language;
+                angular.isDefined(section)
+                    ? $i18n.loadTranslationFile(currentLanguage, section)
+                    : $i18n.loadTranslationFile(currentLanguage)
             }
             return translation;
         };
@@ -313,19 +393,16 @@ angular.module('angular-i18n', ['ng'])
         return myFilter;
     }])
 
-    .directive('i18n', ['$i18n', function ($i18n)
-    {
+    .directive('i18n', ['$i18n', function ($i18n) {
         return {
             restrict: "A",
-            link: function (scope, elm, attrs)
-            {
+            link: function (scope, elm, attrs) {
                 //  construct the tag to insert into the element
-                var tag = $i18n.getTranslation(attrs.i18n);
+                var tag = $i18n._getLanguageAndTranslate(attrs.i18n);
                 elm.text(tag);
 
                 $i18n.translate(attrs.i18n)
-                    .success(function (translated)
-                    {
+                    .success(function (translated) {
                         elm.text(translated)
                     });
             }
