@@ -1,4 +1,4 @@
-angular-i18n is a small Angular module in charge of i18n.
+angular-i18n is a small Angular module in charge of i18n.  
 [![wercker status](https://app.wercker.com/status/4c29fbca7d6e75236843bdb3752f2273/m "wercker status")](https://app.wercker.com/project/bykey/4c29fbca7d6e75236843bdb3752f2273)
 
 
