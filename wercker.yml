@@ -28,6 +28,10 @@ build:
         name: run bower install
         code: bower --allow-root install
     - npm-test
+    - script:
+        name: generate badge
+        code: |
+          echo
 
 dev:
   steps:

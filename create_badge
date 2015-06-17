@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+var coberturaBadger = require('istanbul-cobertura-badger');
+
+var coberturaFile = "coverage/cobertura-coverage.xml";
+var destinationPath = path.join(process.env.PWD, "build/tests");
+
+coverageBadger(coberturaFile, destinationPath, function() {
+  console.log("Badge created at " + destinationPath + "/cobertura.svg");
+});

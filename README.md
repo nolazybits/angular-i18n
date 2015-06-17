@@ -1,6 +1,7 @@
-angular-i18n is a small Angular module in charge of i18n.  
-[![wercker status](https://app.wercker.com/status/4c29fbca7d6e75236843bdb3752f2273/m "wercker status")](https://app.wercker.com/project/bykey/4c29fbca7d6e75236843bdb3752f2273)
+[![NPM](https://nodei.co/npm/angular-internationalization.png)](https://nodei.co/npm/angular-internationalization/)  
+[![wercker status](https://app.wercker.com/status/4c29fbca7d6e75236843bdb3752f2273/s "wercker status")](https://app.wercker.com/project/bykey/4c29fbca7d6e75236843bdb3752f2273)    
 
+angular-i18n is a small Angular module in charge of i18n.  
 
 ### Dependencies
 
