@@ -21,7 +21,12 @@ build:
     # http://devcenter.wercker.com/docs/steps/index.html
   steps:
     - npm-install
-    - bower update
+    - script:
+        name: install bower
+        code: sudo npm install -g bower
+    - script:
+        name: run bower install
+        code: bower install
     - npm-test
 
 dev:
