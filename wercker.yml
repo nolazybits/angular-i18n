@@ -21,9 +21,11 @@ build:
     # http://devcenter.wercker.com/docs/steps/index.html
   steps:
     - npm-install
+    - bower update
     - npm-test
 
 dev:
   steps:
     - npm-install
+    - bower update
     - npm-test
