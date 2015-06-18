@@ -10,7 +10,7 @@ This module ```angular-i18n``` has dependencies resolved with bower on:
 ### Usage
 
 This module has:
-* a [provider](#provider-$i18n) ($i18nProvider) 
+* a [provider](#provider-i18n) ($i18nProvider) 
 * a [factory](#factory-i18n) ($i18n) 
 * a [filter](#filter-i18n) (i18n)
 * a [directive](#directive-i18n) (i18n).
