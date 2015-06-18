@@ -50,8 +50,8 @@ The fr-FR.json file looks like this
 | [defaultLanguage](#defaultlanguage) | The default language to use | ```'en-US'``` |  
 | [fallback](#fallback) | The fallback translation object if the translation files failed to load | ```null``` |  
 | [fileURL](#fileurl) | Set the template URL(s) where translation files will be loaded from.| ```'/i18n/|LANG|_|PART|.json'``` |  
-| [fileURLLanguageToken](#fileurllanguagetoken) | The token (string|regex) to look for in the fileURL which will be replaced with the current language string id (i.e en**_**US) to be loaded | ```/\|LANG\|/``` |  
-| [fileURLPartToken](#fileurlparttoken) | The token (string|regex) to look for in the fileURL which will be replaced with the current section string id (i.e home) to be loaded | ```/\|PART\|/``` |         
+| [fileURLLanguageToken](#fileurllanguagetoken) | The token (string\|regex) to look for in the fileURL which will be replaced with the current language string id (i.e en**_**US) to be loaded | ```/\|LANG\|/``` |  
+| [fileURLPartToken](#fileurlparttoken) | The token (string\|regex) to look for in the fileURL which will be replaced with the current section string id (i.e home) to be loaded | ```/\|PART\|/``` |         
 | [language](#language) | The language to use | ```null``` |         
 | [useBaseHrefTag](#usebasehreftag) | Should the library prepend the base tag url to the pathLanguageURL (this to help with relative links) | ```false``` |    
 
@@ -71,38 +71,51 @@ Example:
 > Set if you want to be able to load multiple files for a language  
 **default:** ```false```  
 
-Please check the partial loading section in this documentation.
+Please check the [partial loading](#using-partial-loading) section in this documentation.
 
-##### setPathLanguageURL  
-> Set the template URL where translation file will be loaded from  
-**default:** ```'/i18n/|LANG|.json'```  
-
-The template URL contains a token that will be replaced (using regex replace) with the current language id.  
-**Note:** the language id will have the the '-' replaced with '_' (i.e 'en-US' will become en_US).  
-e.g: if you have a language set to 'en-US' the file */i18n/en_US.json* will be loaded.
-
-##### setPathLanguageRegex
-> The regex to look for which will be replaced with the current language string id (i.e en**_**US) to be loaded  
-**default:** ```/\|LANG\|/```  
-
-This is the regular expression that will be looked for and replaced with the language id in the path template URL.  
-Note: the language id will have the the '-' replaced with '_' (i.e 'en-US' will become en_US).  
-So if you have a language set to 'en-US' the file */i18n/en_US.json* will be loaded.
-
-##### setDefaultLanguage
+##### defaultLanguage
 > The default language  
 **default:** ```'en-US'```
 
-##### setLanguage
+##### fallback
+> The fallback translation object if the translation file(s) failed to load  
+**default:** ```null```
+
+##### fileURL  
+> Set the template URL(s) where the translation file(s) will be loaded from  
+**default:** ```'/i18n/|LANG|.json'```  
+
+The template URL contains a language token that will be replaced (using regex replace) with the current language id.  
+The URL can also contain a optional part token needed if you have set [```allowPartialFileLoading```](#allowpartialfileloading) to ```true```  
+For more information the [partial loading](#using-partial-loading) section in this documentation.  
+
+**Note:** the language id will have the the '-' replaced with '_' (i.e 'en-US' will become en_US).  
+e.g: if you have a language set to 'en-US' the file */i18n/en_US.json* will be loaded.
+
+##### fileURLLanguageToken
+> The string or regex to look for which will be replaced with the current language string id (i.e en**_**US) to be loaded  
+**default:** ```/\|LANG\|/```  
+
+This is the string or regular expression that will be looked for and replaced with the language id in the path template URL.  
+
+**Note:** the language id will have the the '-' replaced with '_' (i.e 'en-US' will become en_US).  
+So if you have a language set to 'en-US' the file */i18n/en_US.json* will be loaded.
+
+
+##### fileURLPartToken
+> The string or regex to look for which will be replaced with the current section string id (i.e home) to be loaded  
+**default:** ```/\|PART\|/```  
+
+This is the string or regular expression that will be looked for and replaced with the section id in the path template URL.  
+
+For more information, please check the [partial loading](#using-partial-loading) section in this documentation.
+
+##### language
 > The explicitly defined language  
 **default:** ```null```
 
-##### setFallback
-> The fallback translation object if the translation file failed to load  
-**default:** ```null```
-
-##### setUseBaseHrefTag
-> Should the library prepend the base tag url to the pathLanguageURL (this to help with relative links) 
+##### useBaseHrefTag
+> Should the library prepend the base tag url to the fileURL(s) (this to help with relative links) 
 **default:** ```false```
 
 #### Factory '$18n'  
@@ -112,36 +125,49 @@ The factory can use all the previous method described in the [provider](#provide
 
 | Methods | Description |    
 | :-------| ----------- |    
-| [addLanguageFile](#addlanguagefile) | add a file directly to i18n. Used if want to download the file yourself |
-| [getCurrentLanguage](#getcurrentlanguage) | The language to use |      
-| [getTranslation](#gettranslation) | Translate instantaneously, used by the filter |            
-| [loadTranslationFile](#loadtranslationfile) | Loads the translation file for the current language using the URL and regexp provided at config time |      
-| [translate](#translate) | Return a promise. **THIS IS** the function you want to use |  
-| [removeLanguage](#removelanguage) | Remove a language |  
+| [language](#language) | The language to use |  
 
-##### addLanguageFile
-> add a file directly to i18n. Used if want to download the file yourself 
-
-##### getCurrentLanguage
+##### language
 > Returns the current language.  
 
 The returned value check first the language property (can be set at runtime), then browser language and finally the default language (can be set at config and run time)
 
-##### getTranslation
-> Returns a translation instantaneously  
 
-This will return a translation instantaneously. So if the translation file is not loaded yet, this function will return either the fallback translation or null.
+| Methods | Description |    
+| :-------| ----------- |    
+| [addTranslationObject(lang: string, json: string, section: string)](#addtranslationobject) | add a translation object directly to i18n |
+| [removeTranslationObject(lang: string, section: string)](#removetranslationobject) | remove a translation object added or loaded to the library |
+| [loadTranslationFile(lang, section)](#loadtranslationfile) | To explicitly start loading translation file(s) for the current language using the URL and regexp provided at config time  |
+| [translate(value, section)](#translate) | Return a promise. **THIS IS** the function you want to use on the factory |  
 
-##### loadTranslationFile
-> Loads the translation file for the current language using the URL and regexp provided at config time 
+##### addTranslationObject(lang: string, json: string, section: string)
+> add a translation directly to the library.
+> lang: the language to add
+> json: the json string
+> (section): the section for the language file
 
-##### removeLanguage
-> Remove a language 
+This can prove usefull if you want to retrieve the translation object(s) yourself and then add them to this library.
 
-return void
+##### removeTranslationObject(lang: string, section: string)
+> remove a translation from the library
+> lang: the language to remove from
+> (section): the section to remove from
 
-##### translate
+If no section are provided the whole language will be removed from the library.
+
+**Note**: a section can only be provided if ```$i18nProvider.```[```allowPartialFileLoading```](#allowpartialfileloading) has been set to ```true```  
+
+##### loadTranslationFile(lang: string, section: string)
+> To explicitly start loading translation file(s) for the current language using the URL and regexp provided at config time
+> lang: the language to remove from
+> (section): the section to remove from
+
+**Note**: a section can only be provided if ```$i18nProvider.```[```allowPartialFileLoading```](#allowpartialfileloading) has been set to ```true``` 
+
+##### translate(value: string, section: string)
 > Return a promise. **THIS IS** the function you want to use 
+
+**Note**: a section can only be provided if ```$i18nProvider.```[```allowPartialFileLoading```](#allowpartialfileloading) has been set to ```true``` 
 
 #### Filter 'i18n'
 ```
