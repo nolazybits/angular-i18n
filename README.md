@@ -175,10 +175,9 @@ If no section are provided the whole language will be removed from the library.
 ```
 
 #### Directive 'i18n'
-```
-<span i18n="TRANSLATION_ID"></span>
-```
-
+```<span i18n="TRANSLATION_ID"></span>```  
+or if using partial loading  
+```<span i18n="TRANSLATION_ID" i18n-section="PART_ID"></span>```  
 
 ### Using partial loading
 'Partial loading' means being able to load translations stored in multiple files for a set language.  
@@ -187,21 +186,16 @@ for the sections (or areas) of your application the user is accessing.
 
 #### Setting up partial loading
 * set ```allowPartialFileLoading``` to ```true```
-* (optional) set the ```fileURLLanguageToken```.    
-  Default is the regex /\|LANG\|/  
-* (optional) set the ```fileURLPartToken```.    
-  Default is the regex /\|PART\|/  
-* (optional) set the ```fileURL``` to have both the language and part token in it.  
-  Default is ```'/i18n/|LANG|_|PART|.json'```.  
-  The token '|PART|' will be replace by the _'section'_ name.
-  Remember that the fileURL can still define an array of URLs, which will be tried in order.
-* when using the factory, filter or  directive you can pass the 'section' the translation is loaded from like:
+* (optional) set the ```fileURLLanguageToken```. Default is the regex ```/\|LANG\|/```  
+* (optional) set the ```fileURLPartToken```. Default is the regex ```/\|PART\|/```  
+* (optional) set the ```fileURL``` to have both the language and part token in it. Default is ```'/i18n/|LANG|_|PART|.json'```.  
+  The token ```|PART|``` will be replace by the _'section'_ name.
+  Remember that the _fileURL_ can still define an array of URLs.
+* when using the factory, filter or  directive you can pass the 'section' the translation is loaded for, like for instance:  
   * ```{{ 'myTranslationID' | i18n:'home' }}```  
   * ```i18n.translate('myTranslationID', 'home')```  
   * ```<span i18n="TRANSLATION_ID" i18n-section="home"></span>```
   
-  So for all those, using the default value of the library the file '/i18n/en-US_home.json' will be loaded and the key
-  myTranslationID retreived from it
+  So for all those, using the default values of the library the file ```'/i18n/en-US_home.json'``` will be loaded and the key ```myTranslationID``` retreived from it
   
 Please note that each _'section'_ file will be stored independently. This means the same key can appear in different file.  
-If you 
