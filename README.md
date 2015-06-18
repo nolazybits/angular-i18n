@@ -123,7 +123,7 @@ The correct language to display is determine by the provider, based on the langu
 
 The factory can use all the previous method described in the [provider](#provider-i18n) section plus the following:
 
-| Methods | Description |    
+| Property | Description |    
 | :-------| ----------- |    
 | [language](#language-1) | The language to use |  
 
