@@ -135,8 +135,8 @@ The returned value check first the language property (can be set at runtime), th
 
 | Methods | Description |    
 | :-------| ----------- |    
-| [addTranslationObject(lang: string, json: string, section: string)](#addtranslationobject) | add a translation object directly to i18n |
-| [removeTranslationObject(lang: string, section: string)](#removetranslationobject) | remove a translation object added or loaded to the library |
+| [addTranslationObject(lang, json, section)](#addtranslationobject) | add a translation object directly to i18n |
+| [removeTranslationObject(lang, section)](#removetranslationobject) | remove a translation object added or loaded to the library |
 | [loadTranslationFile(lang, section)](#loadtranslationfile) | To explicitly start loading translation file(s) for the current language using the URL and regexp provided at config time  |
 | [translate(value, section)](#translate) | Return a promise. **THIS IS** the function you want to use on the factory |  
 
