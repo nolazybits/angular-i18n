@@ -23,9 +23,12 @@ describe('i18n', function ()
     {
         it('should have default as defined in documentation',function()
         {
-            expect($i18nProvider.useBaseHrefTag).toBeFalsy();
-            expect($i18nProvider.fileURL).toEqual('/i18n/|LANG|_|PART|.json');
             expect($i18nProvider.defaultLanguage).toEqual('en-US');
+            expect($i18nProvider.fileURL).toEqual('/i18n/|LANG|_|PART|.json');
+            expect($i18nProvider.fileURLLanguageToken).toEqual(/\|LANG\|/);
+            expect($i18nProvider.fileURLPartToken).toEqual(/\|PART\|/);
+            expect($i18nProvider.useBaseHrefTag).toBeFalsy();
+
             expect($i18nProvider.language).toBeNull();
             expect($i18nProvider.fallback).toBeNull();
             expect($i18nProvider.allowPartialFileLoading).toBeFalsy();
@@ -106,6 +109,25 @@ describe('i18n', function ()
                     $httpBackend.flush();
                 });
 
+                describe('with fileURL being an array with first value non reachable', function () {
+
+                    it('should load the en_US.home.json file and translate', function (done) {
+                        $httpBackend.whenGET('tests/mocks/en_US.fail.json').respond(404, '');
+                        $i18nProvider.fileURL = ['tests/mocks/|LANG|.fail.json', 'tests/mocks/|LANG|.home.json'];
+
+                        //this.loadTranslationFile(lang, append);
+                        var translation = $i18n.translate('welcome');
+                        translation
+                            .error(function () {
+                                this.fail();
+                            })
+                            .success(function (translated) {
+                                expect(translated).toEqual('Welcome home');
+                                done();
+                            });
+                        $httpBackend.flush();
+                    });
+                });
 
                 it('should return an error if we try to do partial loading', function()
                 {
@@ -187,6 +209,25 @@ describe('i18n', function ()
                     $httpBackend.flush();
                 });
 
+                describe('with fileURL being an array with first value non reachable', function () {
+
+                    it('should load the en_US.home.json file and translate', function (done) {
+                        $httpBackend.whenGET('tests/mocks/en_US.fail.home.json').respond(404, '');
+                        $i18nProvider.fileURL = ['tests/mocks/|LANG|.fail.|PART|.json', 'tests/mocks/|LANG|.|PART|.json'];
+
+                        var translation = $i18n.translate('welcome', 'home');
+                        translation
+                            .error(function () {
+                                this.fail();
+                            })
+                            .success(function (translated) {
+                                expect(translated).toEqual('Welcome home');
+                                done();
+                            });
+                        $httpBackend.flush();
+                    });
+                });
+
                 it('should be able to do partial/sections loading', function(done)
                 {
                     $i18n.translate('welcome', 'home')
@@ -258,36 +299,4 @@ describe('i18n', function ()
             });
         });
     });
-
-
-
-
-
-    /*describe('with french press', function () {
-        beforeEach(function () {
-            coffeeProvider.useFrenchPress(true);
-        });
-
-        it('should remember the value', function () {
-            expect(coffeeProvider.useFrenchPress()).to.equal(true);
-        });
-
-        it('should make some coffee', inject(function (coffeeMaker) {
-            expect(coffeeMaker.brew()).to.equal('Le café.');
-        }));
-    });
-
-    describe('without french press', function () {
-        beforeEach(function () {
-            coffeeProvider.useFrenchPress(false);
-        });
-
-        it('should remember the value', function () {
-            expect(coffeeProvider.useFrenchPress()).to.equal(false);
-        });
-
-        it('should make some coffee', inject(function (coffeeMaker) {
-            expect(coffeeMaker.brew()).to.equal('A coffee.');
-        }));
-    });*/
 });

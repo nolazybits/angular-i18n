@@ -43,25 +43,35 @@ The fr-FR.json file looks like this
 ```
 
 #### Provider '$i18n'
-The provider has the following methods
-
-| Methods | Description | Default |
-| :-------| ----------- | ------- |
-| [setPathLanguageURL](#setpathlanguageurl) | Set the template URL where translation file will be loaded from | ```'/i18n/|LANG|.json'``` |
-| [setPathLanguageRegex](#setpathlanguageregex) | The regex to look for which will be replaced with the current language string id (i.e en**_**US) to be loaded | ```/\|LANG\|/``` |
-| [setDefaultLanguage](#setdefaultlanguage) | The default language to use | ```'en-US'``` |       
-| [setLanguage](#setlanguage) | The language to use | ```null``` |       
-| [setFallback](#setfallback) | The fallback translation object if the translation file failed to load | ```null``` |  
-| [setUseBaseHrefTag](#setusebasehreftag) | Should the library prepend the base tag url to the pathLanguageURL (this to help with relative links) | ```false``` |  
+| Property | Description | Default |  
+| :-------| ----------- | ------- |  
+| [allowPartialFileLoading](#allowpartialfileloading) | Set if you want to be able to load multiple files for a language | ```false``` |  
+| [baseHref](#basehref) | the base href as found by this library | ```''``` if not provided by html page |  
+| [defaultLanguage](#defaultlanguage) | The default language to use | ```'en-US'``` |  
+| [fallback](#fallback) | The fallback translation object if the translation files failed to load | ```null``` |  
+| [fileURL](#fileurl) | Set the template URL(s) where translation files will be loaded from.| ```'/i18n/|LANG|_|PART|.json'``` |  
+| [fileURLLanguageToken](#fileurllanguagetoken) | The token (string|regex) to look for in the fileURL which will be replaced with the current language string id (i.e en**_**US) to be loaded | ```/\|LANG\|/``` |  
+| [fileURLPartToken](#fileurlparttoken) | The token (string|regex) to look for in the fileURL which will be replaced with the current section string id (i.e home) to be loaded | ```/\|PART\|/``` |         
+| [language](#language) | The language to use | ```null``` |         
+| [useBaseHrefTag](#usebasehreftag) | Should the library prepend the base tag url to the pathLanguageURL (this to help with relative links) | ```false``` |    
 
 Example:  
 ```
-    $i18nProvider
-    	.setPathLanguageURL('/i18n/|LANG|.json')
-        .setPathLanguageRegex(/\|LANG\|/)
-        .setDefaultLanguage('en-US')
-        .setFallback({'WELCOME': 'FALLBACK WELCOME %s', 'GOODBYE': 'FALLBACK WELCOME GOODBYE'})
+    $i18nProvider.allowPartialFileLoading = true;
+    $i18nProvider.defaultLanguage = 'fr-FR';
+    $i18nProvider.fallback = {'welcome': 'falback welcome home'};
+    $i18nProvider.fileURL = '/i18n/|LANG|.|PART|.json';
+    $i18nProvider.fileURLLanguageToken = /\|LANG\|/;
+    $i18nProvider.fileURLPartToken = /\|PART\|/;
+    $i18nProvider.language = 'en-GB';
+    $i18nProvider.useBaseHrefTag = true;
 ```  
+
+##### allowPartialFileLoading  
+> Set if you want to be able to load multiple files for a language  
+**default:** ```false```  
+
+Please check the partial loading section in this documentation.
 
 ##### setPathLanguageURL  
 > Set the template URL where translation file will be loaded from  
@@ -142,3 +152,30 @@ return void
 ```
 <span i18n="TRANSLATION_ID"></span>
 ```
+
+
+### Using partial loading
+'Partial loading' means being able to load translations stored in multiple files for a set language.  
+This is useful if you don't want to download the WHOLE translation file for your WHOLE application but just the ones 
+for the sections (or areas) of your application the user is accessing.
+
+#### Setting up partial loading
+* set ```allowPartialFileLoading``` to ```true```
+* (optional) set the ```fileURLLanguageToken```.    
+  Default is the regex /\|LANG\|/  
+* (optional) set the ```fileURLPartToken```.    
+  Default is the regex /\|PART\|/  
+* (optional) set the ```fileURL``` to have both the language and part token in it.  
+  Default is ```'/i18n/|LANG|_|PART|.json'```.  
+  The token '|PART|' will be replace by the _'section'_ name.
+  Remember that the fileURL can still define an array of URLs, which will be tried in order.
+* when using the factory, filter or  directive you can pass the 'section' the translation is loaded from like:
+  * ```{{ 'myTranslationID' | i18n:'home' }}```  
+  * ```i18n.translate('myTranslationID', 'home')```  
+  * ```<span i18n="TRANSLATION_ID" i18n-section="home"></span>```
+  
+  So for all those, using the default value of the library the file '/i18n/en-US_home.json' will be loaded and the key
+  myTranslationID retreived from it
+  
+Please note that each _'section'_ file will be stored independently. This means the same key can appear in different file.  
+If you 

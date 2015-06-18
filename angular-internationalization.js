@@ -3,14 +3,41 @@ angular.module('angular-i18n', ['ng'])
     .provider('$i18n', [function () {
         return {
             _fileURL: '/i18n/|LANG|_|PART|.json',
-            _fileURLLanguageRegex: /\|LANG\|/,
-            _fileURLPartRegex: /\|PART\|/,
+            _fileURLLanguageToken: /\|LANG\|/,
+            _fileURLPartToken: /\|PART\|/,
             _allowPartialFileLoading: false,
             _useBaseHrefTag: false,
             _baseHref: '',
             _defaultLanguage: 'en-US',
             _language: null,
             _fallback: null,
+
+            get allowPartialFileLoading() {
+                return this._allowPartialFileLoading;
+            },
+            set allowPartialFileLoading(value) {
+                this._allowPartialFileLoading = value;
+                return this;
+            },
+            get baseHref() {
+                return this._baseHref;
+            },
+
+            get defaultLanguage() {
+                return this._defaultLanguage;
+            },
+            set defaultLanguage(lang) {
+                this._defaultLanguage = lang;
+                return this;
+            },
+
+            get fallback() {
+                return this._fallback;
+            },
+            set fallback(json) {
+                this._fallback = json;
+                return this;
+            },
 
             get fileURL() {
                 return this._fileURL;
@@ -20,19 +47,27 @@ angular.module('angular-i18n', ['ng'])
                 return this;
             },
 
-            get fileURLLanguageRegex() {
-                return this._fileURLLanguageRegex;
+            get fileURLLanguageToken() {
+                return this._fileURLLanguageToken;
             },
-            set fileURLLanguageRegex(regex) {
-                this._fileURLLanguageRegex = regex;
+            set fileURLLanguageToken(value) {
+                this._fileURLLanguageToken = value;
                 return this;
             },
 
-            get fileURLPartRegex() {
-                return this._fileURLPartRegex;
+            get fileURLPartToken() {
+                return this._fileURLPartToken;
             },
-            set fileURLPartRegex(regex) {
-                this._fileURLPartRegex = regex;
+            set fileURLPartToken(value) {
+                this._fileURLPartToken = value;
+                return this;
+            },
+
+            get language() {
+                return this._language;
+            },
+            set language(lang) {
+                this._language = lang;
                 return this;
             },
 
@@ -50,41 +85,6 @@ angular.module('angular-i18n', ['ng'])
                 else {
                     this._baseHref = '';
                 }
-                return this;
-            },
-            get baseHref() {
-                return this._baseHref;
-            },
-
-            get defaultLanguage() {
-                return this._defaultLanguage;
-            },
-            set defaultLanguage(lang) {
-                this._defaultLanguage = lang;
-                return this;
-            },
-
-            get language() {
-                return this._language;
-            },
-            set language(lang) {
-                this._language = lang;
-                return this;
-            },
-
-            get allowPartialFileLoading() {
-                return this._allowPartialFileLoading;
-            },
-            set allowPartialFileLoading(value) {
-                this._allowPartialFileLoading = value;
-                return this;
-            },
-
-            get fallback() {
-                return this._fallback;
-            },
-            set fallback(json) {
-                this._fallback = json;
                 return this;
             },
 
@@ -185,9 +185,11 @@ angular.module('angular-i18n', ['ng'])
                             delete this._dictionary[lang];
                         },
 
+
                         loadTranslationFile: function (lang, section) {
-                            var url,
-                                self = this;
+                            var self = this,
+                                deferrer,
+                                loadedFilePromise;
 
                             section = this._checkSectionParameter(section);
 
@@ -213,51 +215,85 @@ angular.module('angular-i18n', ['ng'])
                             };
 
                             //  we will store the promise here.
-                            this._promises[lang] = {};
-
-                            url = _this.fileURL.replace(_this.fileURLLanguageRegex, lang.replace('-', '_'));
-                            if( _this.allowPartialFileLoading )
+                            if( !this._promises[lang] )
                             {
-                                if( url.indexOf(_this.fileURLPartRegex) === -1 )
-                                {
-                                    new Error('The file URL doesn\'t defined regex for partial loading');
-                                }
-                                url = url.replace(_this.fileURLPartRegex, section);
+                                this._promises[lang] = {};
                             }
-                            url = _this.baseHref + url;
 
-                            //  request the resource file
-                            return $http({method: "GET", url: url, cache: false})
-                                .success(function (data, status, headers, config) {
-                                    self.loadTranslationFileSucceed(data, lang, section);
-                                })
-                                .error(function () {
-                                    //  the request failed set the url to the english resource file
-                                    var url2 = _this.baseHref +
-                                        _this.fileURL.replace(
-                                            _this.fileURLLanguageRegex, _this.defaultLanguage.replace('-', '_')
-                                        );
+                            //  create the promise we will return
+                            deferrer = $q.defer();
+                            loadedFilePromise = deferrer.promise;
+                            loadedFilePromise.success = function (fn) {
+                                loadedFilePromise.then(fn);
+                                return loadedFilePromise;
+                            };
+                            loadedFilePromise.error = function (fn) {
+                                loadedFilePromise.then(null, fn);
+                                return loadedFilePromise;
+                            };
 
-                                    //  request the default resource file
-                                    $http({method: "GET", url: url2, cache: false})
-                                        .success(function (data, status, headers, config) {
-                                            self.loadTranslationFileSucceed(data, lang, section);
-                                        })
-                                        .error(function () {
-                                            //  loop into any promises yet to be resolved for this language
+                            var _loadTranslationFile = function(lang, section, urlIndex)
+                            {
+                                var url;
+
+                                if( angular.isArray(_this._fileURL) )
+                                {
+                                    urlIndex = angular.isDefined(urlIndex) ? urlIndex : 0;
+                                    url = _this._fileURL[urlIndex];
+                                }
+                                else
+                                {
+                                    url = _this._fileURL
+                                }
+
+                                url = url.replace(_this._fileURLLanguageToken, lang.replace('-', '_'));
+                                if( _this._allowPartialFileLoading )
+                                {
+                                    if( url.indexOf(_this._fileURLPartToken) === -1 )
+                                    {
+                                        new Error('The file URL doesn\'t defined a token for partial loading');
+                                    }
+                                    url = url.replace(_this._fileURLPartToken, section);
+                                }
+                                url = _this.baseHref + url;
+
+                                return $http({method: "GET", url: url, cache: false})
+                                    .success(function (data, status, headers, config) {
+                                        deferrer.resolve();
+                                        self.loadTranslationFileSucceed(data, lang, section);
+                                    })
+                                    .error(function () {
+                                        if( angular.isNumber(urlIndex) )
+                                        {
+                                            urlIndex++;
+                                        }
+                                        //  we tried all the url none can be resolved
+                                        if ( typeof _this._fileURL === 'string' || urlIndex === _this._fileURL.length) {
+                                            deferrer.reject('None of the URL can be reach');
+                                            var urls = angular.isArray(_this._fileURL) ? _this._fileURL.join(', ') : _this._fileURL;
                                             for (var promiseObject in self._promises[lang]) {
                                                 if (self._promises[lang].hasOwnProperty(promiseObject)) {
                                                     self._promises[lang][promiseObject]
                                                         .deferrer
-                                                        .reject("Could not load translation files "
-                                                                + url + " or " + url2);
+                                                        .reject("Could not load translation files from " + urls);
                                                     self._dictionary[lang].sections = null;
                                                     delete self._promises[lang][promiseObject];
                                                 }
                                             }
-                                        });
-                                }
-                            );
+                                        }
+                                        //  try the next url
+                                        else {
+                                            _loadTranslationFile(lang, section, urlIndex)
+                                        }
+                                    });
+                            };
+
+
+
+                            //  if we have an array of urls try resolve until one is valid
+                            _loadTranslationFile(lang, section);
+
+                            return loadedFilePromise;
                         },
 
                         //  loading translation file for current language succceed
