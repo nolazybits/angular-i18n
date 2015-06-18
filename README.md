@@ -10,10 +10,10 @@ This module ```angular-i18n``` has dependencies resolved with bower on:
 ### Usage
 
 This module has:
-* a provider ($i18nProvider) 
-* a factory ($i18n) 
-* a filter (i18n)
-* a directive (i18n).
+* a [provider](#provider-$i18n) ($i18nProvider) 
+* a [factory](#factory-i18n) ($i18n) 
+* a [filter](#filter-i18n) (i18n)
+* a [directive](#directive-i18n) (i18n).
 
 #### Setup
 
@@ -125,7 +125,7 @@ The factory can use all the previous method described in the [provider](#provide
 
 | Methods | Description |    
 | :-------| ----------- |    
-| [language](#language) | The language to use |  
+| [language](#language-1) | The language to use |  
 
 ##### language
 > Returns the current language.  
