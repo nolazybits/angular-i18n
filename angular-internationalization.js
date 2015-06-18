@@ -163,8 +163,11 @@ angular.module('angular-i18n', ['ng'])
                             return translated;
                         },
 
-                        addLanguageFile: function (lang, json, section) {
-                            section = angular.isDefined(section) ? section : 'all';
+                        addTranslationObject: function (lang, json, section) {
+                            if( !_this.allowPartialFileLoading && section !== 'all')
+                            {
+                                throw new Error('Partial loading has been disable by the provider.');
+                            }
 
                             if( !this._dictionary[lang] )
                             {
@@ -177,7 +180,9 @@ angular.module('angular-i18n', ['ng'])
                             this.loadTranslationFileSucceed(json, lang, section);
                         },
 
-                        removeLanguageFile: function (lang) {
+                        removeTranslationObject: function (lang, section) {
+                            section = angular.isDefined(section) ? section : 'all';
+
                             if (this._dictionary[lang] && (this._dictionary[lang].loading === true
                                 || this._dictionary[lang].loaded === true)) {
                                 return;
