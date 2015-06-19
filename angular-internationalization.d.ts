@@ -5,21 +5,23 @@
 
 declare module angular.i18n {
     interface II18nProvider {
-        setUseBaseHrefTag (value:boolean): II18nProvider;
-        setPathLanguageRegex (regex:RegExp): II18nProvider;
-        setPathLanguageURL (templateUrl:string): II18nProvider;
-        setDefaultLanguage (defaultLang:string): II18nProvider;
-        setLanguage (lang:string): II18nProvider;
-        setFallback (object:Object): II18nProvider;
+        allowPartialFileLoading: boolean;
+        baseHref: string;
+        defaultLanguage: string;
+        fallback: JSON;
+        fileURL: string;
+        fileURLLanguageToken: RegExp|string;
+        fileURLPartToken: RegExp|string;
+        language: string;
+        useBaseHrefTag: boolean;
     }
 
     interface II18n {
-	    addLanguageFile(lang:string, file:Object):void;
-	    getCurrentLanguage (): string;
-	    getTranslation (id:string): string;
-	    loadTranslationFile (lang:string): void;
-        removeLanguage(lang:string): void;
-        translate (id:string): II18nPromise;
+        language: string;
+        addTranslationObject(lang: string, json: string, section?: string): void;
+        removeTranslationObject(lang: string, section?:string): void;
+        loadTranslationFile (lang:string, section?: string): void;
+        translate (id:string, section?: string): II18nPromise;
     }
 
     interface II18nPromiseCallback {

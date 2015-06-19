@@ -119,7 +119,7 @@ angular.module('angular-i18n', ['ng'])
                             return section;
                         },
 
-                        _getLanguageAndTranslate: function (value) {
+                        _getLanguageAndTranslate: function (value, section) {
                             var args = Array.prototype.slice.call(arguments);
                             args.splice(1, 0, this.language);
                             return this._translate.apply(this, args);
@@ -177,7 +177,7 @@ angular.module('angular-i18n', ['ng'])
                                     sections: {}
                                 }
                             }
-                            this.loadTranslationFileSucceed(json, lang, section);
+                            this._loadTranslationFileSucceed(json, lang, section);
                         },
 
                         removeTranslationObject: function (lang, section) {
@@ -265,7 +265,7 @@ angular.module('angular-i18n', ['ng'])
                                 return $http({method: "GET", url: url, cache: false})
                                     .success(function (data, status, headers, config) {
                                         deferrer.resolve();
-                                        self.loadTranslationFileSucceed(data, lang, section);
+                                        self._loadTranslationFileSucceed(data, lang, section);
                                     })
                                     .error(function () {
                                         if( angular.isNumber(urlIndex) )
@@ -302,7 +302,7 @@ angular.module('angular-i18n', ['ng'])
                         },
 
                         //  loading translation file for current language succceed
-                        loadTranslationFileSucceed: function (data, lang, section) {
+                        _loadTranslationFileSucceed: function (data, lang, section) {
                             var self = this,
                                 translation = {};
 
@@ -342,9 +342,6 @@ angular.module('angular-i18n', ['ng'])
                             // add the section to the argument array
                             args.splice(2, 1, section);
 
-                            console.log('args');
-                            console.log(args);
-
                             var addPromise = function (args, instant) {
                                 instant = typeof instant !== 'undefined' ? instant : false;
 
@@ -375,6 +372,13 @@ angular.module('angular-i18n', ['ng'])
                                     return deferrer;
                                 }
                             };
+
+                            if( value === '')
+                            {
+                                var failedDeferrer = addPromise(args, true);
+                                failedDeferrer.reject('No translation ID were provided');
+                                return failedDeferrer.promise;
+                            }
 
                             //  we haven't load the file yet
                             if (!this._dictionary[lang]
@@ -439,7 +443,7 @@ angular.module('angular-i18n', ['ng'])
             restrict: "A",
             link: function (scope, elm, attrs) {
                 //  construct the tag to insert into the element
-                var tag = $i18n._getLanguageAndTranslate(attrs.i18n);
+                var tag = $i18n._getLanguageAndTranslate(attrs.i18n, attrs.i18nSection);
                 elm.text(tag);
 
                 $i18n.translate(attrs.i18n)
