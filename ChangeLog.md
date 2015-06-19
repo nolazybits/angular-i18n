@@ -1,3 +1,5 @@
+* 2015-05-13   v1.1.0   Breaking change. The library has been updated to use getter/setters
+                        Now support partial file loading (check the doco)
 * 2015-05-13   v1.0.10  reject promise when file loading fails.
 * 2015-05-13   v1.0.9   fix typescript typings
 * 2015-05-06   v1.0.8   Updated bower.json file 
