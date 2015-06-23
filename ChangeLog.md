@@ -1,3 +1,4 @@
+* 2015-05-24   v1.1.1   Changes to allow dynamic sections in the filters
 * 2015-05-13   v1.1.0   Breaking change. The library has been updated to use getter/setters
                         Now support partial file loading (check the doco)
 * 2015-05-13   v1.0.10  reject promise when file loading fails.

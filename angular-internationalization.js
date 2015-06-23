@@ -141,12 +141,17 @@ angular.module('angular-i18n', ['ng'])
                                 {
                                     throw new Error('The section you are trying to access do not exsists');
                                 }
-                                if( !this._dictionary[lang].sections[section].translation[value] )
+
+                                if( this._dictionary[lang].sections[section].translation
+                                    && !this._dictionary[lang].sections[section].translation[value] )
                                 {
                                     throw new Error('The translation for \''+ value +'\' in the section \''
                                         + section +'\' for \''+ lang +'\' does not exists');
                                 }
-                                translated = this._dictionary[lang].sections[section].translation[value];
+
+                                translated = this._dictionary[lang].sections[section].translation
+                                    ? this._dictionary[lang].sections[section].translation[value]
+                                    : null;
                             }
 
                             for (var i = 2; i < arguments.length; i++) {
@@ -425,13 +430,14 @@ angular.module('angular-i18n', ['ng'])
             if (angular.isDefined(section) && !angular.isString(section)) {
                 throw new Error('i18n filter error: The section id must be a string');
             }
-            var translation = $i18n._getLanguageAndTranslate.apply($i18n, arguments);
+
             if (currentLanguage === null || currentLanguage !== $i18n.language) {
                 currentLanguage = $i18n.language;
                 angular.isDefined(section)
                     ? $i18n.loadTranslationFile(currentLanguage, section)
                     : $i18n.loadTranslationFile(currentLanguage)
             }
+            var translation = $i18n._getLanguageAndTranslate.apply($i18n, arguments);
             return translation;
         };
         myFilter.$stateful = true;
