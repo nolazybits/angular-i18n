@@ -95,8 +95,7 @@ describe('i18n', function ()
                 it('should load the en_US.home.json file and translate', function(done)
                 {
                     //this.loadTranslationFile(lang, append);
-                    var translation = $i18n.translate('welcome');
-                    translation
+                    $i18n.translate('welcome')
                         .error(function()
                         {
                             this.fail();
@@ -106,19 +105,22 @@ describe('i18n', function ()
                             expect(translated).toEqual('Welcome home');
                             done();
                         });
+                    $httpBackend.flush();
+                });
 
-                    var translationSprintf = $i18n.translate('sprintf.test', null, 'Karma', 10);
-                    translation
+                it('should translate sprintf format', function(done)
+                {
+                    //this.loadTranslationFile(lang, append);
+                    $i18n.translate('sprintf.test', null, ['Karma', 10])
                         .error(function()
                         {
                             this.fail();
                         })
                         .success(function(translated)
                         {
-                            expect(translated).toEqual('Karma|10');
+                            expect(translated).toEqual('Karma,10');
                             done();
                         });
-
                     $httpBackend.flush();
                 });
 
@@ -170,9 +172,35 @@ describe('i18n', function ()
                     $httpBackend.flush();
                 });
 
+                it('should translate sprintf format', function(done)
+                {
+
+                    $i18n.loadTranslationFile($i18n.language)
+                    .success(function(){
+                        var translation = i18n('sprintf.test', {placeholders:['Karma', 10]});
+                        expect(translation).toEqual('Karma,10');
+                        done();
+                    });
+                    $httpBackend.flush();
+                });
+
                 it('should return an error if we try to do partial loading', function()
                 {
-                    expect(function() { i18n('welcome', 'home'); }).toThrow( new Error('Partial loading has been disable by the provider.') );
+                    expect(function() { i18n('welcome', {section:'home'}); }).toThrow( new Error('Partial loading has been disable by the provider.') );
+                });
+
+                it('should fail when trying to translate a non existing translationId', function(done)
+                {
+
+                    $i18n.loadTranslationFile($i18n.language)
+                        .success(function(){
+                            expect(function() { i18n('failId'); }).toThrow(
+                                new Error('The translation for \'failId\' in the section \'all\' for \''
+                                    + $i18n.language +'\' does not exists')
+                            );
+                            done();
+                        });
+                    $httpBackend.flush();
                 });
             });
         });
@@ -277,7 +305,7 @@ describe('i18n', function ()
 
                     $i18n.loadTranslationFile($i18n.language, 'home')
                     .success(function(){
-                        var translation = i18n('welcome', 'home');
+                        var translation = i18n('welcome', {section: 'home'});
                         expect(translation).toEqual('Welcome home');
                         done();
                     });
@@ -289,7 +317,7 @@ describe('i18n', function ()
 
                     $i18n.loadTranslationFile($i18n.language, 'fail')
                     .finally(function(){
-                        expect(function() { i18n('welcome', 'fail'); }).toThrow(
+                        expect(function() { i18n('welcome', {section: 'fail'}); }).toThrow(
                             new Error('The section you are trying to access do not exists')
                         );
                         done();
@@ -302,7 +330,7 @@ describe('i18n', function ()
 
                     $i18n.loadTranslationFile($i18n.language, 'home')
                         .success(function(){
-                            expect(function() { i18n('failId', 'home'); }).toThrow(
+                            expect(function() { i18n('failId', {section: 'home'}); }).toThrow(
                                 new Error('The translation for \'failId\' in the section \'home\' for \''
                                     + $i18n.language +'\' does not exists')
                             );
