@@ -1,4 +1,5 @@
 {
     "welcome": "Welcome home",
-    "welcome.greetings": "It is so good to see you"
+    "welcome.greetings": "It is so good to see you",
+    "sprintf.test": "%s|%d"
 }

@@ -106,6 +106,19 @@ describe('i18n', function ()
                             expect(translated).toEqual('Welcome home');
                             done();
                         });
+
+                    var translationSprintf = $i18n.translate('sprintf.test', null, 'Karma', 10);
+                    translation
+                        .error(function()
+                        {
+                            this.fail();
+                        })
+                        .success(function(translated)
+                        {
+                            expect(translated).toEqual('Karma|10');
+                            done();
+                        });
+
                     $httpBackend.flush();
                 });
 

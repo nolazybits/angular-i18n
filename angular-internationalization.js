@@ -339,7 +339,7 @@ angular.module('angular-i18n', ['ng'])
 
                             // add the language to the argument array
                             args.splice(1, 0, lang);
-                            // add the section to the argument array
+                            // add/replace the section to the argument array
                             args.splice(2, 1, section);
 
                             var addPromise = function (args, instant) {
