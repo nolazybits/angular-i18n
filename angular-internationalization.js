@@ -137,16 +137,23 @@ angular.module('angular-i18n', ['ng'])
                                 }
                             }
                             else {
-                                if( !this._dictionary[lang].sections[section] )
+                                if( !this._dictionary[lang].sections[section]
+                                    || (this._dictionary[lang].sections[section].loaded === true
+                                        && this._dictionary[lang].sections[section].translation === null ))
                                 {
-                                    throw new Error('The section you are trying to access do not exsists');
+                                    throw new Error('The section you are trying to access do not exists');
                                 }
-                                if( !this._dictionary[lang].sections[section].translation[value] )
+
+                                if( this._dictionary[lang].sections[section].translation
+                                    && !this._dictionary[lang].sections[section].translation[value] )
                                 {
                                     throw new Error('The translation for \''+ value +'\' in the section \''
                                         + section +'\' for \''+ lang +'\' does not exists');
                                 }
-                                translated = this._dictionary[lang].sections[section].translation[value];
+
+                                translated = this._dictionary[lang].sections[section].translation
+                                    ? this._dictionary[lang].sections[section].translation[value]
+                                    : null;
                             }
 
                             for (var i = 2; i < arguments.length; i++) {
@@ -274,6 +281,10 @@ angular.module('angular-i18n', ['ng'])
                                         }
                                         //  we tried all the url none can be resolved
                                         if ( typeof _this._fileURL === 'string' || urlIndex === _this._fileURL.length) {
+                                            self._dictionary[lang].sections[section].loaded = true;
+                                            self._dictionary[lang].sections[section].loading = false;
+                                            self._dictionary[lang].sections[section].translation = null;
+
                                             deferrer.reject('None of the URL can be reach');
                                             var urls = angular.isArray(_this._fileURL) ? _this._fileURL.join(', ') : _this._fileURL;
                                             for (var promiseObject in self._promises[lang]) {
@@ -281,7 +292,6 @@ angular.module('angular-i18n', ['ng'])
                                                     self._promises[lang][promiseObject]
                                                         .deferrer
                                                         .reject("Could not load translation files from " + urls);
-                                                    self._dictionary[lang].sections = null;
                                                     delete self._promises[lang][promiseObject];
                                                 }
                                             }
@@ -310,8 +320,8 @@ angular.module('angular-i18n', ['ng'])
 
                             //  store the returned array in the dictionary
                             self._dictionary[lang].sections[section] = {
-                                loading: true,
-                                loaded: false,
+                                loading: false,
+                                loaded: true,
                                 translation: data
                             };
 
@@ -425,13 +435,14 @@ angular.module('angular-i18n', ['ng'])
             if (angular.isDefined(section) && !angular.isString(section)) {
                 throw new Error('i18n filter error: The section id must be a string');
             }
-            var translation = $i18n._getLanguageAndTranslate.apply($i18n, arguments);
+
             if (currentLanguage === null || currentLanguage !== $i18n.language) {
                 currentLanguage = $i18n.language;
                 angular.isDefined(section)
                     ? $i18n.loadTranslationFile(currentLanguage, section)
                     : $i18n.loadTranslationFile(currentLanguage)
             }
+            var translation = $i18n._getLanguageAndTranslate.apply($i18n, arguments);
             return translation;
         };
         myFilter.$stateful = true;
