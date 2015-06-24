@@ -106,7 +106,7 @@ angular.module('angular-i18n', ['ng'])
 
                         _checkSectionParameter: function(section)
                         {
-                            section = angular.isDefined(section) ? section : 'all';
+                            section = angular.isDefined(section) && section !== null ? section : 'all';
                             if( !angular.isString(section) )
                             {
                                 throw new Error('section parameter must be of type string');
@@ -119,17 +119,16 @@ angular.module('angular-i18n', ['ng'])
                             return section;
                         },
 
-                        _getLanguageAndTranslate: function (value, section) {
-                            var args = Array.prototype.slice.call(arguments);
-                            args.splice(1, 0, this.language);
-                            return this._translate.apply(this, args);
+                        _getLanguageAndTranslate: function (value, section, placeholders) {
+                            return this._translate(value, this.language, section, placeholders);
                         },
 
-                        _translate: function (value, lang, section) {
-                            var placeholders = [],
-                                translated;
+                        _translate: function (value, lang, section, placeholders) {
+                            var translated;
 
                             section = this._checkSectionParameter(section);
+                            placeholders = placeholders ? placeholders : [];
+
 
                             if (!this._dictionary || !this._dictionary[lang] ) {
                                 if (_this.fallback && typeof _this.fallback === "object" && _this.fallback[value]) {
@@ -156,15 +155,11 @@ angular.module('angular-i18n', ['ng'])
                                     : null;
                             }
 
-                            for (var i = 2; i < arguments.length; i++) {
-                                placeholders.push(arguments[i]);
-                            }
-
                             if (translated === null) {
-                                translated = sprintf(value, placeholders);
+                                translated = vsprintf(value, placeholders);
                             }
                             else {
-                                translated = sprintf(translated, placeholders);
+                                translated = vsprintf(translated, placeholders);
                             }
 
                             return translated;
@@ -337,7 +332,7 @@ angular.module('angular-i18n', ['ng'])
                             $rootScope.$broadcast('i18nUpdated');
                         },
 
-                        translate: function (value, section) {
+                        translate: function (value, section, placeholders) {
                             var self = this;
 
                             section = this._checkSectionParameter(section);
@@ -349,10 +344,8 @@ angular.module('angular-i18n', ['ng'])
 
                             // add the language to the argument array
                             args.splice(1, 0, lang);
-                            // add the section to the argument array
-                            args.splice(2, 1, section);
 
-                            var addPromise = function (args, instant) {
+                            var addPromise = function (value, lang, section, placeholders, instant) {
                                 instant = typeof instant !== 'undefined' ? instant : false;
 
                                 var deferrer = null,
@@ -377,7 +370,7 @@ angular.module('angular-i18n', ['ng'])
                                     };
 
                                     if (!instant) {
-                                        self._promises[lang][value] = {arguments: args, deferrer: deferrer};
+                                        self._promises[lang][value] = {arguments: arguments, deferrer: deferrer};
                                     }
                                     return deferrer;
                                 }
@@ -385,7 +378,7 @@ angular.module('angular-i18n', ['ng'])
 
                             if( value === '')
                             {
-                                var failedDeferrer = addPromise(args, true);
+                                var failedDeferrer = addPromise(value, lang, section, placeholders, true);
                                 failedDeferrer.reject('No translation ID were provided');
                                 return failedDeferrer.promise;
                             }
@@ -400,14 +393,14 @@ angular.module('angular-i18n', ['ng'])
 
                             //  we have called the loading process but we are still waiting on the file
                             if (this._dictionary[lang].sections[section].loading) {
-                                return addPromise(args).promise;
+                                return addPromise(value, lang, section, placeholders).promise;
                             }
 
                             //  the translation file finished loading
                             if (this._dictionary[lang]
                                 && !this._dictionary[lang].sections[section].loading
                                 && this._dictionary[lang].sections[section].loaded) {
-                                deferrer = addPromise(args, true);
+                                deferrer = addPromise(value, lang, section, placeholders, true);
                                 //  unsuccessfully
                                 if (this._dictionary[lang].sections[section].translation === null
                                     || typeof this._dictionary[lang].sections[section].translation !== "object") {
@@ -415,7 +408,7 @@ angular.module('angular-i18n', ['ng'])
                                 }
                                 //  successfully
                                 else {
-                                    deferrer.resolve(self._translate.apply(self, args));
+                                    deferrer.resolve(self._translate(value, lang, section, placeholders));
                                 }
                                 return deferrer.promise;
                             }
@@ -427,22 +420,30 @@ angular.module('angular-i18n', ['ng'])
 
     .filter('i18n', ['$i18n', function ($i18n) {
         var currentLanguage = null;
-        var myFilter = function (translationId, section) {
+        var myFilter = function (translationId, object) {
             if (!angular.isString(translationId)) {
                 throw new Error('i18n filter error: The translation id must be a string');
             }
+            object = object ? object : {};
 
-            if (angular.isDefined(section) && !angular.isString(section)) {
-                throw new Error('i18n filter error: The section id must be a string');
+            if (angular.isDefined(object)) {
+                if(angular.isDefined(object.section) && !angular.isString(object.section)) {
+                    throw new Error('i18n filter error: The section id must be a string');
+                }
+
+                if (angular.isDefined(object.placeholders)
+                    && Object.prototype.toString.call(object.placeholders) !== '[object Array]') {
+                    throw new Error('i18n filter error: The placeholders must be an array');
+                }
             }
 
             if (currentLanguage === null || currentLanguage !== $i18n.language) {
                 currentLanguage = $i18n.language;
-                angular.isDefined(section)
-                    ? $i18n.loadTranslationFile(currentLanguage, section)
-                    : $i18n.loadTranslationFile(currentLanguage)
+                angular.isDefined(object) && angular.isDefined(object.section)
+                    ? $i18n.loadTranslationFile(currentLanguage, object.section, object.placeholders)
+                    : $i18n.loadTranslationFile(currentLanguage, null, object.placeholders)
             }
-            var translation = $i18n._getLanguageAndTranslate.apply($i18n, arguments);
+            var translation = $i18n._getLanguageAndTranslate.call($i18n, translationId, object.section, object.placeholders);
             return translation;
         };
         myFilter.$stateful = true;

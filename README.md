@@ -89,8 +89,8 @@ The template URL contains a language token that will be replaced (using regex re
 The URL can also contain a optional part token needed if you have set [```allowPartialFileLoading```](#allowpartialfileloading) to ```true```  
 For more information the [partial loading](#using-partial-loading) section in this documentation.  
 
-**Note:** the language id will have the the '-' replaced with '_' (i.e 'en-US' will become en_US).  
-e.g: if you have a language set to 'en-US' the file */i18n/en_US.json* will be loaded.
+**Note: the language id will have the the '-' replaced with '_' (i.e 'en-US' will become en_US).  
+e.g: if you have a language set to 'en-US' the file */i18n/en_US.json* will be loaded.**
 
 ##### fileURLLanguageToken
 > The string or regex to look for which will be replaced with the current language string id (i.e en**_**US) to be loaded  
@@ -138,7 +138,7 @@ The returned value check first the language property (can be set at runtime), th
 | [addTranslationObject(lang, json, section)](#addtranslationobject) | add a translation object directly to i18n |
 | [removeTranslationObject(lang, section)](#removetranslationobject) | remove a translation object added or loaded to the library |
 | [loadTranslationFile(lang, section)](#loadtranslationfile) | To explicitly start loading translation file(s) for the current language using the URL and regexp provided at config time  |
-| [translate(value, section)](#translate) | Return a promise. **THIS IS** the function you want to use on the factory |  
+| [translate(value, section, placeholders)](#translate) | Return a promise. **THIS IS** the function you want to use on the factory |  
 
 ##### addTranslationObject(lang: string, json: string, section: string)
 > add a translation directly to the library.
@@ -164,15 +164,19 @@ If no section are provided the whole language will be removed from the library.
 
 **Note**: a section can only be provided if ```$i18nProvider.```[```allowPartialFileLoading```](#allowpartialfileloading) has been set to ```true``` 
 
-##### translate(value: string, section: string)
-> Return a promise. **THIS IS** the function you want to use 
+##### translate(value: string, section?: string, placeholders?: Array)
+> Return a promise. **THIS IS** the function you want to use
+
+The placeholders array is the value that are going to replace the sprintf placeholders. 
 
 **Note**: a section can only be provided if ```$i18nProvider.```[```allowPartialFileLoading```](#allowpartialfileloading) has been set to ```true``` 
 
 #### Filter 'i18n'
+example:  
 ```
-{{ 'TRANSLATION_ID' | i18n }}  
+{{ 'TRANSLATION_ID' | i18n:{section:'sectionName', placeholders:['value1', 0] }}  
 ```
+note that the object parameter is optional as well as the section and placeholders property of the object. 
 
 #### Directive 'i18n'
 ```<span i18n="TRANSLATION_ID"></span>```  
