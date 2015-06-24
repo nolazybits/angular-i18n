@@ -174,7 +174,7 @@ The placeholders array is the value that are going to replace the sprintf placeh
 #### Filter 'i18n'
 example:  
 ```
-{{ 'TRANSLATION_ID' | i18n:{section:'sectionName', placeholders:['value1', 0] }}  
+{{ 'TRANSLATION_ID' | i18n:{section:'sectionName', placeholders:['value1', 0]} }}  
 ```
 note that the object parameter is optional as well as the section and placeholders property of the object. 
 
