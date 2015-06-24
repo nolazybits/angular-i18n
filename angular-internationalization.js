@@ -137,9 +137,11 @@ angular.module('angular-i18n', ['ng'])
                                 }
                             }
                             else {
-                                if( !this._dictionary[lang].sections[section] )
+                                if( !this._dictionary[lang].sections[section]
+                                    || (this._dictionary[lang].sections[section].loaded === true
+                                        && this._dictionary[lang].sections[section].translation === null ))
                                 {
-                                    throw new Error('The section you are trying to access do not exsists');
+                                    throw new Error('The section you are trying to access do not exists');
                                 }
 
                                 if( this._dictionary[lang].sections[section].translation
@@ -279,6 +281,10 @@ angular.module('angular-i18n', ['ng'])
                                         }
                                         //  we tried all the url none can be resolved
                                         if ( typeof _this._fileURL === 'string' || urlIndex === _this._fileURL.length) {
+                                            self._dictionary[lang].sections[section].loaded = true;
+                                            self._dictionary[lang].sections[section].loading = false;
+                                            self._dictionary[lang].sections[section].translation = null;
+
                                             deferrer.reject('None of the URL can be reach');
                                             var urls = angular.isArray(_this._fileURL) ? _this._fileURL.join(', ') : _this._fileURL;
                                             for (var promiseObject in self._promises[lang]) {
@@ -286,7 +292,6 @@ angular.module('angular-i18n', ['ng'])
                                                     self._promises[lang][promiseObject]
                                                         .deferrer
                                                         .reject("Could not load translation files from " + urls);
-                                                    self._dictionary[lang].sections = null;
                                                     delete self._promises[lang][promiseObject];
                                                 }
                                             }
@@ -315,8 +320,8 @@ angular.module('angular-i18n', ['ng'])
 
                             //  store the returned array in the dictionary
                             self._dictionary[lang].sections[section] = {
-                                loading: true,
-                                loaded: false,
+                                loading: false,
+                                loaded: true,
                                 translation: data
                             };
 

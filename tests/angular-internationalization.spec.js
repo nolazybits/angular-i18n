@@ -188,6 +188,8 @@ describe('i18n', function ()
                     getJSONFixture('en_US.login.json')
                 );
 
+                $httpBackend.whenGET('tests/mocks/en_US.fail.json').respond(404, '');
+
                 inject(function (_$i18n_)
                 {
                     $i18n = _$i18n_;
@@ -272,10 +274,10 @@ describe('i18n', function ()
                 it('should fail when trying to load a non existing section', function(done)
                 {
 
-                    $i18n.loadTranslationFile($i18n.language, 'home')
-                    .success(function(){
+                    $i18n.loadTranslationFile($i18n.language, 'fail')
+                    .finally(function(){
                         expect(function() { i18n('welcome', 'fail'); }).toThrow(
-                            new Error('The section you are trying to access do not exsists')
+                            new Error('The section you are trying to access do not exists')
                         );
                         done();
                     });
