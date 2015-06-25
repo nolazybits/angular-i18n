@@ -436,13 +436,9 @@ angular.module('angular-i18n', ['ng'])
                     throw new Error('i18n filter error: The placeholders must be an array');
                 }
             }
+            //  load translation file (if needed)
+            $i18n.loadTranslationFile($i18n.language, object.section, object.placeholders);
 
-            if (currentLanguage === null || currentLanguage !== $i18n.language) {
-                currentLanguage = $i18n.language;
-                angular.isDefined(object) && angular.isDefined(object.section)
-                    ? $i18n.loadTranslationFile(currentLanguage, object.section, object.placeholders)
-                    : $i18n.loadTranslationFile(currentLanguage, null, object.placeholders)
-            }
             var translation = $i18n._getLanguageAndTranslate.call($i18n, translationId, object.section, object.placeholders);
             return translation;
         };
@@ -455,10 +451,10 @@ angular.module('angular-i18n', ['ng'])
             restrict: "A",
             link: function (scope, elm, attrs) {
                 //  construct the tag to insert into the element
-                var tag = $i18n._getLanguageAndTranslate(attrs.i18n, attrs.i18nSection);
+                var tag = $i18n._getLanguageAndTranslate(attrs.i18n, attrs.i18nSection, attrs.i18nPlaceholders);
                 elm.text(tag);
 
-                $i18n.translate(attrs.i18n)
+                $i18n.translate(attrs.i18n, attrs.i18nSection, attrs.i18nPlaceholders)
                     .success(function (translated) {
                         elm.text(translated)
                     });
