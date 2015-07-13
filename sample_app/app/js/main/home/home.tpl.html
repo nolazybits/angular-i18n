@@ -1,0 +1,24 @@
+<h3>Usage of sprintf and placeholders with filters</h3>
+<p>{{ 'greeting' | i18n:{section:'about', placeholders:[ctrl.name]} }}</p>
+<p>The translation string is 'Hello %s you are in the about section.'<br/>
+'{{ ctrl.name }}' comes from the controller and is passed to the placeholders parameter of the i18n filter
+</p>
+
+<h3>Usage of sprintf and placeholders with directives</h3>
+<p i18n="'greeting'" i18n-section="'about'" i18n-placeholders="[ctrl.name]"></p>
+<p>The translation string is 'Hello %s you are in the about section.'<br/>
+    '{{ ctrl.name }}' comes from the controller and is passed to the placeholders parameter of the i18n filter
+</p>
+
+<h3>Display of untranslated string with filters</h3>
+<p>
+    <strong>Using ng-bind-html to have html ouput</strong><br/>
+    <span ng-bind-html="'untranslated.id.here' | i18n:{section:'about', placeholders:[ctrl.name]}" />
+</p>
+<p>
+    <strong>Using angular expression directly</strong><br/>
+    {{ 'untranslated.id.here' | i18n:{section:'about', placeholders:[ctrl.name]} }}
+</p>
+
+<h3>Display of untranslated string with directives</h3>
+<span i18n="'untranslated.id.here'" i18n-section="'about'" i18n-placeholders="[ctrl.name]"></span>

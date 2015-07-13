@@ -24,7 +24,7 @@ describe('i18n', function ()
         it('should have default as defined in documentation',function()
         {
             expect($i18nProvider.defaultLanguage).toEqual('en-US');
-            expect($i18nProvider.fileURL).toEqual('/i18n/|LANG|_|PART|.json');
+            expect($i18nProvider.fileURL).toEqual('/i18n/|LANG|.json');
             expect($i18nProvider.fileURLLanguageToken).toEqual(/\|LANG\|/);
             expect($i18nProvider.fileURLPartToken).toEqual(/\|PART\|/);
             expect($i18nProvider.useBaseHrefTag).toBeFalsy();
@@ -202,6 +202,22 @@ describe('i18n', function ()
                         });
                     $httpBackend.flush();
                 });
+
+                it('should call onTranslatedFailed when debug is on and onTranslationFailed set', function(done)
+                {
+                    $i18n.debug = true;
+                    $i18n.onTranslationFailed = function() { return '';};
+                    spyOn($i18n, 'onTranslationFailed').and.callThrough();
+
+                    $i18n.loadTranslationFile($i18n.language)
+                        .success(function(){
+                            i18n('failId');
+                            expect($i18n.onTranslationFailed).toHaveBeenCalledWith($i18n.language, 'failId', undefined, undefined);
+                            done();
+                        });
+                    $httpBackend.flush();
+                });
+
             });
         });
 
@@ -334,6 +350,21 @@ describe('i18n', function ()
                                 new Error('The translation for \'failId\' in the section \'home\' for \''
                                     + $i18n.language +'\' does not exists')
                             );
+                            done();
+                        });
+                    $httpBackend.flush();
+                });
+
+                it('should call onTranslatedFailed when debug is on and onTranslationFailed set', function(done)
+                {
+                    $i18n.debug = true;
+                    $i18n.onTranslationFailed = function() { return '';};
+                    spyOn($i18n, 'onTranslationFailed').and.callThrough();
+
+                    $i18n.loadTranslationFile($i18n.language, 'home')
+                        .success(function(){
+                            i18n('failId', {section: 'home'});
+                            expect($i18n.onTranslationFailed).toHaveBeenCalledWith($i18n.language, 'failId', 'home', undefined);
                             done();
                         });
                     $httpBackend.flush();

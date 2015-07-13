@@ -2,7 +2,7 @@ angular.module('angular-i18n', ['ng'])
     //  create our localization service
     .provider('$i18n', [function () {
         return {
-            _fileURL: '/i18n/|LANG|_|PART|.json',
+            _fileURL: '/i18n/|LANG|.json',
             _fileURLLanguageToken: /\|LANG\|/,
             _fileURLPartToken: /\|PART\|/,
             _allowPartialFileLoading: false,
@@ -11,6 +11,8 @@ angular.module('angular-i18n', ['ng'])
             _defaultLanguage: 'en-US',
             _language: null,
             _fallback: null,
+            _debug: false,
+            _onTranslationFailed: null,
 
             get allowPartialFileLoading() {
                 return this._allowPartialFileLoading;
@@ -21,6 +23,14 @@ angular.module('angular-i18n', ['ng'])
             },
             get baseHref() {
                 return this._baseHref;
+            },
+
+            get debug() {
+                return this._debug;
+            },
+            set debug(value) {
+                this._debug = value;
+                return this;
             },
 
             get defaultLanguage() {
@@ -71,6 +81,21 @@ angular.module('angular-i18n', ['ng'])
                 return this;
             },
 
+            get onTranslationFailed() {
+                return this._onTranslationFailed;
+            },
+            set onTranslationFailed(func) {
+                if( func === null || func && {}.toString.call(func) == '[object Function]' )
+                {
+                    this._onTranslationFailed = func;
+                }
+                else
+                {
+                    throw new TypeError('the argument func of displayUntranslated(func) must be a function');
+                }
+                return this;
+            },
+
             get useBaseHrefTag() {
                 return this._useBaseHrefTag;
             },
@@ -88,12 +113,20 @@ angular.module('angular-i18n', ['ng'])
                 return this;
             },
 
-            $get: ['$http', '$rootScope', '$window', '$q',
-                function ($http, $rootScope, $window, $q) {
+            $get: ['$http', '$rootScope', '$window', '$q', '$log',
+                function ($http, $rootScope, $window, $q, $log) {
                     var _this = this;
                     return {
                         _dictionary: {},
                         _promises: {},
+
+                        get debug() {
+                            return _this.debug;
+                        },
+                        set debug(value) {
+                            _this.debug = value;
+                            return this;
+                        },
 
                         get language() {
                             return _this.language || $window.navigator.userLanguage
@@ -101,6 +134,14 @@ angular.module('angular-i18n', ['ng'])
                         },
                         set language(lang) {
                             _this.language = lang;
+                            return this;
+                        },
+
+                        get onTranslationFailed() {
+                            return _this.onTranslationFailed;
+                        },
+                        set onTranslationFailed(func) {
+                            _this.onTranslationFailed = func;
                             return this;
                         },
 
@@ -309,7 +350,7 @@ angular.module('angular-i18n', ['ng'])
                         //  loading translation file for current language succceed
                         _loadTranslationFileSucceed: function (data, lang, section) {
                             var self = this,
-                                translation = {};
+                                translation;
 
                             section = this._checkSectionParameter(section);
 
@@ -323,7 +364,16 @@ angular.module('angular-i18n', ['ng'])
                             //  loop into any promises yet to be resolved for this language
                             for (var promiseObject in self._promises[lang]) {
                                 if (self._promises[lang].hasOwnProperty(promiseObject)) {
-                                    self._promises[lang][promiseObject].deferrer.resolve(self._translate.apply(self, self._promises[lang][promiseObject].arguments));
+                                    try {
+                                        translation = self._translate.apply(self, self._promises[lang][promiseObject].arguments);
+                                        self._promises[lang][promiseObject].deferrer.resolve(translation);
+                                    }
+                                    catch(e)
+                                    {
+                                        self._promises[lang][promiseObject].deferrer.reject(e.message);
+                                        $log.error(e);
+                                    }
+
                                     delete self._promises[lang][promiseObject];
                                 }
                             }
@@ -408,7 +458,17 @@ angular.module('angular-i18n', ['ng'])
                                 }
                                 //  successfully
                                 else {
-                                    deferrer.resolve(self._translate(value, lang, section, placeholders));
+                                    var translation;
+                                    try
+                                    {
+                                        translation = self._translate(value, lang, section, placeholders);
+                                        deferrer.resolve(translation);
+                                    }
+                                    catch(e)
+                                    {
+                                        deferrer.reject(e.message);
+                                        $log.error(e);
+                                    }
                                 }
                                 return deferrer.promise;
                             }
@@ -418,7 +478,7 @@ angular.module('angular-i18n', ['ng'])
         };
     }])
 
-    .filter('i18n', ['$i18n', function ($i18n) {
+    .filter('i18n', ['$i18n', '$sce', '$compile', '$log', function ($i18n, $sce, $compile, $log) {
         var currentLanguage = null;
         var myFilter = function (translationId, object) {
             if (!angular.isString(translationId)) {
@@ -439,25 +499,57 @@ angular.module('angular-i18n', ['ng'])
             //  load translation file (if needed)
             $i18n.loadTranslationFile($i18n.language, object.section, object.placeholders);
 
-            var translation = $i18n._getLanguageAndTranslate.call($i18n, translationId, object.section, object.placeholders);
+            try
+            {
+                var translation = $i18n._getLanguageAndTranslate.call($i18n, translationId, object.section, object.placeholders);
+            }
+            catch(e)
+            {
+                if($i18n.debug && $i18n.onTranslationFailed)
+                {
+                    translation = $sce.trustAsHtml($i18n.onTranslationFailed($i18n.language, translationId, object.section, object.placeholders));
+                    $log.error(e);
+                }
+                else
+                {
+                    throw e;
+                }
+
+            }
             return translation;
         };
         myFilter.$stateful = true;
         return myFilter;
     }])
 
-    .directive('i18n', ['$i18n', function ($i18n) {
+    .directive('i18n', ['$i18n', '$compile', '$log', function ($i18n, $compile, $log) {
         return {
+            scope: {
+                i18n: '=',
+                i18nSection: '=?',
+                i18nPlaceholders: '=?'
+            },
             restrict: "A",
             link: function (scope, elm, attrs) {
-                //  construct the tag to insert into the element
-                var tag = $i18n._getLanguageAndTranslate(attrs.i18n, attrs.i18nSection, attrs.i18nPlaceholders);
-                elm.text(tag);
-
-                $i18n.translate(attrs.i18n, attrs.i18nSection, attrs.i18nPlaceholders)
+                $i18n.translate(scope.i18n, scope.i18nSection, scope.i18nPlaceholders)
                     .success(function (translated) {
                         elm.text(translated)
-                    });
+                    })
+                    .error(function(stringError)
+                    {
+                        if($i18n.debug && $i18n.onTranslationFailed)
+                        {
+                            var translation = $i18n.onTranslationFailed($i18n.language, scope.i18n, scope.i18nSection, scope.i18nPlaceholders);
+                            elm.html(translation);
+                            $compile(translation, scope);
+                            $log.error(stringError);
+                        }
+                        else
+                        {
+                            throw new Error(stringError);
+                        }
+
+                    })
             }
         }
     }]);

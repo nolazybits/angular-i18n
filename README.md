@@ -46,24 +46,28 @@ The fr-FR.json file looks like this
 | Property | Description | Default |  
 | :-------| ----------- | ------- |  
 | [allowPartialFileLoading](#allowpartialfileloading) | Set if you want to be able to load multiple files for a language | ```false``` |  
-| [baseHref](#basehref) | the base href as found by this library | ```''``` if not provided by html page |  
+| [baseHref](#basehref) | the base href as found by this library | ```''``` if not provided by html page |
+| [debug](#debug) | debug mode | ```false``` |
 | [defaultLanguage](#defaultlanguage) | The default language to use | ```'en-US'``` |  
 | [fallback](#fallback) | The fallback translation object if the translation files failed to load | ```null``` |  
 | [fileURL](#fileurl) | Set the template URL(s) where translation files will be loaded from.| ```'/i18n/|LANG|_|PART|.json'``` |  
 | [fileURLLanguageToken](#fileurllanguagetoken) | The token (string\|regex) to look for in the fileURL which will be replaced with the current language string id (i.e en**_**US) to be loaded | ```/\|LANG\|/``` |  
 | [fileURLPartToken](#fileurlparttoken) | The token (string\|regex) to look for in the fileURL which will be replaced with the current section string id (i.e home) to be loaded | ```/\|PART\|/``` |         
-| [language](#language) | The language to use | ```null``` |         
+| [language](#language) | The language to use | ```null``` |
+| [onTranslationFailed](#ontranslationfailed) | This function is called when the debug mode is on and the translation failed on filter or directives | ```null``` |
 | [useBaseHrefTag](#usebasehreftag) | Should the library prepend the base tag url to the pathLanguageURL (this to help with relative links) | ```false``` |    
 
 Example:  
 ```
     $i18nProvider.allowPartialFileLoading = true;
+    $i18nProvider.defaultLanguage = true;
     $i18nProvider.defaultLanguage = 'fr-FR';
     $i18nProvider.fallback = {'welcome': 'falback welcome home'};
     $i18nProvider.fileURL = '/i18n/|LANG|.|PART|.json';
     $i18nProvider.fileURLLanguageToken = /\|LANG\|/;
     $i18nProvider.fileURLPartToken = /\|PART\|/;
     $i18nProvider.language = 'en-GB';
+    $i18nProvider.onTranslationFailed = function(lang, translationID, section, placeholders) {...};
     $i18nProvider.useBaseHrefTag = true;
 ```  
 
@@ -72,6 +76,10 @@ Example:
 **default:** ```false```  
 
 Please check the [partial loading](#using-partial-loading) section in this documentation.
+
+##### debug
+> The debug mode      
+**default:** ```false```
 
 ##### defaultLanguage
 > The default language  
@@ -114,6 +122,26 @@ For more information, please check the [partial loading](#using-partial-loading)
 > The explicitly defined language  
 **default:** ```null```
 
+##### onTranslationFailed
+> Function called when the debug mode is on and when the translation failed for filters or directives.  
+> Must return a string  
+**default:** ```null```  
+
+example  
+```
+$i18nProvider.onTranslationFailed = function(lang, translationID, section, placeholders) {
+    return '<span style="color: red">translationID</span>
+};
+```
+The above function returns HTML and no plain text. To have Angular displays the HTML:   
+- with the i18n directive nothing has to be done.  
+- with the i18n filter you will have to do the following:  
+ - use your filer inside an element and biding the filter value to ng-bind-html as    
+ ```<span ng-bind-html="'translationID' | i18n:{section: ...}" />```  
+ So note that the value returned by this function will be [$sce.trustAsHtml](https://docs.angularjs.org/api/ng/service/$sce#trustAsHtml)
+ 
+Please check the sample app for examples.
+
 ##### useBaseHrefTag
 > Should the library prepend the base tag url to the fileURL(s) (this to help with relative links) 
 **default:** ```false```
@@ -126,6 +154,8 @@ The factory can use all the previous method described in the [provider](#provide
 | Property | Description |    
 | :-------| ----------- |    
 | [language](#language-1) | The language to use |  
+| [debug](#debug) | reference the provider debug property | ```false``` |
+| [onTranslationFailed](#ontranslationfailed) | Reference the provider onTranslationFailed property | ```null``` |
 
 ##### language
 > Returns the current language.  

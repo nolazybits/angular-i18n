@@ -7,17 +7,21 @@ declare module angular.i18n {
     interface II18nProvider {
         allowPartialFileLoading: boolean;
         baseHref: string;
+        debug: boolean;
         defaultLanguage: string;
         fallback: JSON;
         fileURL: string;
         fileURLLanguageToken: RegExp|string;
         fileURLPartToken: RegExp|string;
         language: string;
+        onTranslationFailed: Function;
         useBaseHrefTag: boolean;
     }
 
     interface II18n {
+        debug: boolean;
         language: string;
+        onTranslationFailed: Function;
         addTranslationObject(lang: string, json: string, section?: string): void;
         removeTranslationObject(lang: string, section?:string): void;
         loadTranslationFile (lang:string, section?: string): void;
