@@ -2,7 +2,7 @@ angular.module('angular-i18n', ['ng'])
     //  create our localization service
     .provider('$i18n', [function () {
         return {
-            _fileURL: '/i18n/|LANG|_|PART|.json',
+            _fileURL: '/i18n/|LANG|.json',
             _fileURLLanguageToken: /\|LANG\|/,
             _fileURLPartToken: /\|PART\|/,
             _allowPartialFileLoading: false,
@@ -11,6 +11,8 @@ angular.module('angular-i18n', ['ng'])
             _defaultLanguage: 'en-US',
             _language: null,
             _fallback: null,
+            _debug: false,
+            _onTranslationFailed: null,
 
             get allowPartialFileLoading() {
                 return this._allowPartialFileLoading;
@@ -21,6 +23,14 @@ angular.module('angular-i18n', ['ng'])
             },
             get baseHref() {
                 return this._baseHref;
+            },
+
+            get debug() {
+                return this._debug;
+            },
+            set debug(value) {
+                this._debug = value;
+                return this;
             },
 
             get defaultLanguage() {
@@ -71,6 +81,21 @@ angular.module('angular-i18n', ['ng'])
                 return this;
             },
 
+            get onTranslationFailed() {
+                return this._onTranslationFailed;
+            },
+            set onTranslationFailed(func) {
+                if( func === null || func && {}.toString.call(func) == '[object Function]' )
+                {
+                    this._onTranslationFailed = func;
+                }
+                else
+                {
+                    throw new TypeError('the argument func of displayUntranslated(func) must be a function');
+                }
+                return this;
+            },
+
             get useBaseHrefTag() {
                 return this._useBaseHrefTag;
             },
@@ -95,12 +120,28 @@ angular.module('angular-i18n', ['ng'])
                         _dictionary: {},
                         _promises: {},
 
+                        get debug() {
+                            return _this.debug;
+                        },
+                        set debug(value) {
+                            _this.debug = value;
+                            return this;
+                        },
+
                         get language() {
                             return _this.language || $window.navigator.userLanguage
                                 || $window.navigator.language || _this.defaultLanguage;
                         },
                         set language(lang) {
                             _this.language = lang;
+                            return this;
+                        },
+
+                        get onTranslationFailed() {
+                            return _this.onTranslationFailed;
+                        },
+                        set onTranslationFailed(func) {
+                            _this.onTranslationFailed = func;
                             return this;
                         },
 
@@ -418,7 +459,7 @@ angular.module('angular-i18n', ['ng'])
         };
     }])
 
-    .filter('i18n', ['$i18n', function ($i18n) {
+    .filter('i18n', ['$i18n', '$sce', '$compile', function ($i18n, $sce, $compile) {
         var currentLanguage = null;
         var myFilter = function (translationId, object) {
             if (!angular.isString(translationId)) {
@@ -439,14 +480,29 @@ angular.module('angular-i18n', ['ng'])
             //  load translation file (if needed)
             $i18n.loadTranslationFile($i18n.language, object.section, object.placeholders);
 
-            var translation = $i18n._getLanguageAndTranslate.call($i18n, translationId, object.section, object.placeholders);
+            try
+            {
+                var translation = $i18n._getLanguageAndTranslate.call($i18n, translationId, object.section, object.placeholders);
+            }
+            catch(e)
+            {
+                if($i18n.debug && $i18n.onTranslationFailed)
+                {
+                    translation = $sce.trustAsHtml($i18n.onTranslationFailed($i18n.language, translationId, object.section, object.placeholders));
+                }
+                else
+                {
+                    throw e;
+                }
+
+            }
             return translation;
         };
         myFilter.$stateful = true;
         return myFilter;
     }])
 
-    .directive('i18n', ['$i18n', function ($i18n) {
+    .directive('i18n', ['$i18n', '$compile', function ($i18n, $compile) {
         return {
             restrict: "A",
             link: function (scope, elm, attrs) {
@@ -457,7 +513,20 @@ angular.module('angular-i18n', ['ng'])
                 $i18n.translate(attrs.i18n, attrs.i18nSection, attrs.i18nPlaceholders)
                     .success(function (translated) {
                         elm.text(translated)
-                    });
+                    })
+                    .error(function(stringError)
+                    {
+                        if($i18n.debug && $i18n.onTranslationFailed)
+                        {
+                            var translation = $i18n.onTranslationFailed($i18n.language, attrs.i18n, attrs.i18nSection, attrs.i18nPlaceholders)
+                            elm.text(translation);
+                            $compile(translation, scope);
+                        }
+                        else
+                        {
+                            throw new Error(stringError);
+                        }
+                    })
             }
         }
     }]);

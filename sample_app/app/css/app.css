@@ -1,0 +1,29 @@
+/* app css stylesheet */
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 960px;
+  margin: 0 auto;
+}
+
+.main {
+  clear:both;
+}
+
+.nav {
+  list-style-type: none;
+  padding: 0;
+}
+
+.nav li {
+  float: left;
+  margin-right: 10px;
+}
+
+.nav:after {
+  clear:both;
+}
