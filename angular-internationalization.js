@@ -508,8 +508,13 @@ angular.module('angular-i18n', ['ng'])
                 if($i18n.debug && $i18n.onTranslationFailed)
                 {
                     translation = $sce.trustAsHtml($i18n.onTranslationFailed($i18n.language, translationId, object.section, object.placeholders));
+                    $log.error(e);
                 }
-                $log.error(e);
+                else
+                {
+                    throw e;
+                }
+
             }
             return translation;
         };
@@ -520,10 +525,9 @@ angular.module('angular-i18n', ['ng'])
     .directive('i18n', ['$i18n', '$compile', '$log', function ($i18n, $compile, $log) {
         return {
             scope: {
-                i18nPlaceholders: '=?',
                 i18n: '=',
                 i18nSection: '=?',
-                i18nTest: '=?'
+                i18nPlaceholders: '=?'
             },
             restrict: "A",
             link: function (scope, elm, attrs) {
@@ -538,8 +542,13 @@ angular.module('angular-i18n', ['ng'])
                             var translation = $i18n.onTranslationFailed($i18n.language, scope.i18n, scope.i18nSection, scope.i18nPlaceholders);
                             elm.html(translation);
                             $compile(translation, scope);
+                            $log.error(stringError);
                         }
-                        $log.error(stringError);
+                        else
+                        {
+                            throw new Error(stringError);
+                        }
+
                     })
             }
         }
