@@ -1,2 +1,5 @@
 *.iml
 .idea/
+**/node_modules
+**/bower_components
+sample_app/app/js/angular-internationalization.js
