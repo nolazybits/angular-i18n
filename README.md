@@ -54,7 +54,7 @@ The fr-FR.json file looks like this
 | [fileURLLanguageToken](#fileurllanguagetoken) | The token (string\|regex) to look for in the fileURL which will be replaced with the current language string id (i.e en**_**US) to be loaded | ```/\|LANG\|/``` |  
 | [fileURLPartToken](#fileurlparttoken) | The token (string\|regex) to look for in the fileURL which will be replaced with the current section string id (i.e home) to be loaded | ```/\|PART\|/``` |         
 | [language](#language) | The language to use | ```null``` |
-| [onTranslationFailed](#ontranslationfailed) | This function call when debug on and translation failed on filter or directives | ```null``` |
+| [onTranslationFailed](#ontranslationfailed) | This function is called when the debug mode is on and the translation failed on filter or directives | ```null``` |
 | [useBaseHrefTag](#usebasehreftag) | Should the library prepend the base tag url to the pathLanguageURL (this to help with relative links) | ```false``` |    
 
 Example:  

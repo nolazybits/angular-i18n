@@ -350,7 +350,7 @@ angular.module('angular-i18n', ['ng'])
                         //  loading translation file for current language succceed
                         _loadTranslationFileSucceed: function (data, lang, section) {
                             var self = this,
-                                translation = {};
+                                translation;
 
                             section = this._checkSectionParameter(section);
 
@@ -364,7 +364,19 @@ angular.module('angular-i18n', ['ng'])
                             //  loop into any promises yet to be resolved for this language
                             for (var promiseObject in self._promises[lang]) {
                                 if (self._promises[lang].hasOwnProperty(promiseObject)) {
-                                    self._promises[lang][promiseObject].deferrer.resolve(self._translate.apply(self, self._promises[lang][promiseObject].arguments));
+                                    try {
+                                        translation = self._translate.apply(self, self._promises[lang][promiseObject].arguments);
+                                        self._promises[lang][promiseObject].deferrer.resolve(translation);
+                                    }
+                                    catch(e)
+                                    {
+                                        self._promises[lang][promiseObject].deferrer.reject(e.message);
+                                        if( !self.debug )
+                                        {
+                                            throw e;
+                                        }
+                                    }
+
                                     delete self._promises[lang][promiseObject];
                                 }
                             }
@@ -449,7 +461,20 @@ angular.module('angular-i18n', ['ng'])
                                 }
                                 //  successfully
                                 else {
-                                    deferrer.resolve(self._translate(value, lang, section, placeholders));
+                                    var translation;
+                                    try
+                                    {
+                                        translation = self._translate(value, lang, section, placeholders);
+                                        deferrer.resolve(translation);
+                                    }
+                                    catch(e)
+                                    {
+                                        deferrer.reject(e.message);
+                                        if( !self._debug )
+                                        {
+                                            throw e;
+                                        }
+                                    }
                                 }
                                 return deferrer.promise;
                             }
@@ -504,13 +529,15 @@ angular.module('angular-i18n', ['ng'])
 
     .directive('i18n', ['$i18n', '$compile', function ($i18n, $compile) {
         return {
+            scope: {
+                i18nPlaceholders: '=?',
+                i18n: '=',
+                i18nSection: '=?',
+                i18nTest: '=?'
+            },
             restrict: "A",
             link: function (scope, elm, attrs) {
-                //  construct the tag to insert into the element
-                var tag = $i18n._getLanguageAndTranslate(attrs.i18n, attrs.i18nSection, attrs.i18nPlaceholders);
-                elm.text(tag);
-
-                $i18n.translate(attrs.i18n, attrs.i18nSection, attrs.i18nPlaceholders)
+                $i18n.translate(scope.i18n, scope.i18nSection, scope.i18nPlaceholders)
                     .success(function (translated) {
                         elm.text(translated)
                     })
@@ -518,8 +545,8 @@ angular.module('angular-i18n', ['ng'])
                     {
                         if($i18n.debug && $i18n.onTranslationFailed)
                         {
-                            var translation = $i18n.onTranslationFailed($i18n.language, attrs.i18n, attrs.i18nSection, attrs.i18nPlaceholders)
-                            elm.text(translation);
+                            var translation = $i18n.onTranslationFailed($i18n.language, scope.i18n, scope.i18nSection, scope.i18nPlaceholders);
+                            elm.html(translation);
                             $compile(translation, scope);
                         }
                         else

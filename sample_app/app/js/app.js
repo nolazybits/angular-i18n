@@ -1,6 +1,7 @@
 var app = angular.module('app',
     [
         'ui.router',
+        'ngSanitize',
         'ngMaterial',
         'angular-i18n'
     ])
