@@ -113,8 +113,8 @@ angular.module('angular-i18n', ['ng'])
                 return this;
             },
 
-            $get: ['$http', '$rootScope', '$window', '$q',
-                function ($http, $rootScope, $window, $q) {
+            $get: ['$http', '$rootScope', '$window', '$q', '$log',
+                function ($http, $rootScope, $window, $q, $log) {
                     var _this = this;
                     return {
                         _dictionary: {},
@@ -371,10 +371,7 @@ angular.module('angular-i18n', ['ng'])
                                     catch(e)
                                     {
                                         self._promises[lang][promiseObject].deferrer.reject(e.message);
-                                        if( !self.debug )
-                                        {
-                                            throw e;
-                                        }
+                                        $log.error(e);
                                     }
 
                                     delete self._promises[lang][promiseObject];
@@ -470,10 +467,7 @@ angular.module('angular-i18n', ['ng'])
                                     catch(e)
                                     {
                                         deferrer.reject(e.message);
-                                        if( !self._debug )
-                                        {
-                                            throw e;
-                                        }
+                                        $log.error(e);
                                     }
                                 }
                                 return deferrer.promise;
@@ -484,7 +478,7 @@ angular.module('angular-i18n', ['ng'])
         };
     }])
 
-    .filter('i18n', ['$i18n', '$sce', '$compile', function ($i18n, $sce, $compile) {
+    .filter('i18n', ['$i18n', '$sce', '$compile', '$log', function ($i18n, $sce, $compile, $log) {
         var currentLanguage = null;
         var myFilter = function (translationId, object) {
             if (!angular.isString(translationId)) {
@@ -515,11 +509,7 @@ angular.module('angular-i18n', ['ng'])
                 {
                     translation = $sce.trustAsHtml($i18n.onTranslationFailed($i18n.language, translationId, object.section, object.placeholders));
                 }
-                else
-                {
-                    throw e;
-                }
-
+                $log.error(e);
             }
             return translation;
         };
@@ -527,7 +517,7 @@ angular.module('angular-i18n', ['ng'])
         return myFilter;
     }])
 
-    .directive('i18n', ['$i18n', '$compile', function ($i18n, $compile) {
+    .directive('i18n', ['$i18n', '$compile', '$log', function ($i18n, $compile, $log) {
         return {
             scope: {
                 i18nPlaceholders: '=?',
@@ -549,10 +539,7 @@ angular.module('angular-i18n', ['ng'])
                             elm.html(translation);
                             $compile(translation, scope);
                         }
-                        else
-                        {
-                            throw new Error(stringError);
-                        }
+                        $log.error(stringError);
                     })
             }
         }
