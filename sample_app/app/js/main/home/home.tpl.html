@@ -5,7 +5,7 @@
 </p>
 
 <h3>Usage of sprintf and placeholders with directives</h3>
-<p i18n="'greeting'" i18n-section="'about'" i18n-placeholders="[ctrl.name]"></p>
+<p i18n="'greeting'" i18n-parameters="{section: 'about', placeholders: [ctrl.name] }"></p>
 <p>The translation string is 'Hello %s you are in the about section.'<br/>
     '{{ ctrl.name }}' comes from the controller and is passed to the placeholders parameter of the i18n filter
 </p>
@@ -21,4 +21,4 @@
 </p>
 
 <h3>Display of untranslated string with directives</h3>
-<span i18n="'untranslated.id.here'" i18n-section="'about'" i18n-placeholders="[ctrl.name]"></span>
+<span i18n="'untranslated.id.here'" i18n-parameters="{section: 'about', placeholders: [ctrl.name] }" ></span>

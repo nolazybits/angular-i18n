@@ -211,7 +211,7 @@ note that the object parameter is optional as well as the section and placeholde
 #### Directive 'i18n'
 ```<span i18n="TRANSLATION_ID"></span>```  
 or if using partial loading  
-```<span i18n="TRANSLATION_ID" i18n-section="PART_ID"></span>```  
+```<span i18n="TRANSLATION_ID" i18n-parameters="{section: 'PART_ID', placeholders: ['value1', 0] }"></span>```  
 
 ### Using partial loading
 'Partial loading' means being able to load translations stored in multiple files for a set language.  
