@@ -526,12 +526,12 @@ angular.module('angular-i18n', ['ng'])
         return {
             scope: {
                 i18n: '=',
-                i18nSection: '=?',
-                i18nPlaceholders: '=?'
+                i18nParameters: '=?'
             },
             restrict: "A",
             link: function (scope, elm, attrs) {
-                $i18n.translate(scope.i18n, scope.i18nSection, scope.i18nPlaceholders)
+                scope.i18nParameters = angular.extend({}, scope.i18nParameters);
+                $i18n.translate(scope.i18n, scope.i18nParameters.section, scope.i18nParameters.placeholders)
                     .success(function (translated) {
                         elm.text(translated)
                     })
@@ -539,7 +539,7 @@ angular.module('angular-i18n', ['ng'])
                     {
                         if($i18n.debug && $i18n.onTranslationFailed)
                         {
-                            var translation = $i18n.onTranslationFailed($i18n.language, scope.i18n, scope.i18nSection, scope.i18nPlaceholders);
+                            var translation = $i18n.onTranslationFailed($i18n.language, scope.i18n, scope.i18nParameters.section, scope.i18nParameters.placeholders);
                             elm.html(translation);
                             $compile(translation, scope);
                             $log.error(stringError);
