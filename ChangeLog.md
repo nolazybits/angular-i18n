@@ -1,4 +1,5 @@
-* 2015-07-14   v1.1.3   Updated directive.  Breaking change on parameters.   
+* 2015-07-14   v1.1.5   Fixed checking for section regex in string.  Added i18n.file.loaded event.  null or undefined i18n value on filter now translate to an empty string   
+* 2015-07-14   v1.1.4   Updated directive.  Breaking change on parameters.   
 * 2015-07-13   v1.1.3   Updated directive.  Added onTranslationFailed.   
 * 2015-05-24   v1.1.2   Fixed sprintf format. **Breaking Change** filter get an object as parameter
 * 2015-05-24   v1.1.1   Changes to allow dynamic sections in the filters

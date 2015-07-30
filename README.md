@@ -107,7 +107,8 @@ e.g: if you have a language set to 'en-US' the file */i18n/en_US.json* will be l
 This is the string or regular expression that will be looked for and replaced with the language id in the path template URL.  
 
 **Note:** the language id will have the the '-' replaced with '_' (i.e 'en-US' will become en_US).  
-So if you have a language set to 'en-US' the file */i18n/en_US.json* will be loaded.
+So if you have a language set to 'en-US' the file */i18n/en_US.json* will be loaded.  
+If you are using the RegExp object double backslash like ```new RegExp('\\|LANG\\|');```
 
 
 ##### fileURLPartToken
@@ -162,6 +163,19 @@ The factory can use all the previous method described in the [provider](#provide
 
 The returned value check first the language property (can be set at runtime), then browser language and finally the default language (can be set at config and run time)
 
+| Events | Description |    
+| :-------| ----------- |    
+| [i18n.file.loaded](#i18n.file.loaded) | Dispatched when a translation file has been loaded |  
+
+##### i18n.file.loaded
+> Dispatched when a translation file has been loaded  
+
+The arguments passed are:
+
+ * lang: the language used
+ * section: the section loaded (if any otherwise 'all')
+ * data: the data received.
+ 
 
 | Methods | Description |    
 | :-------| ----------- |    

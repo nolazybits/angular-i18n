@@ -167,9 +167,14 @@ angular.module('angular-i18n', ['ng'])
                         _translate: function (value, lang, section, placeholders) {
                             var translated;
 
+                            //  return an empty string for undefined value
+                            if( value === "undefined" || value === null )
+                            {
+                                return '';
+                            }
+
                             section = this._checkSectionParameter(section);
                             placeholders = placeholders ? placeholders : [];
-
 
                             if (!this._dictionary || !this._dictionary[lang] ) {
                                 if (_this.fallback && typeof _this.fallback === "object" && _this.fallback[value]) {
@@ -297,9 +302,9 @@ angular.module('angular-i18n', ['ng'])
                                 url = url.replace(_this._fileURLLanguageToken, lang.replace('-', '_'));
                                 if( _this._allowPartialFileLoading )
                                 {
-                                    if( url.indexOf(_this._fileURLPartToken) === -1 )
+                                    if( !_this._fileURLPartToken.test(url) )
                                     {
-                                        new Error('The file URL doesn\'t defined a token for partial loading');
+                                        throw new Error('The file URL doesn\'t defined a token for partial loading');
                                     }
                                     url = url.replace(_this._fileURLPartToken, section);
                                 }
@@ -379,7 +384,7 @@ angular.module('angular-i18n', ['ng'])
                             }
 
                             //  broadcast that the file has been loaded
-                            $rootScope.$broadcast('i18nUpdated');
+                            $rootScope.$broadcast('i18n.file.loaded', lang, section, data);
                         },
 
                         translate: function (value, section, placeholders) {
@@ -481,7 +486,7 @@ angular.module('angular-i18n', ['ng'])
     .filter('i18n', ['$i18n', '$sce', '$compile', '$log', function ($i18n, $sce, $compile, $log) {
         var currentLanguage = null;
         var myFilter = function (translationId, object) {
-            if (!angular.isString(translationId)) {
+            if (translationId && !angular.isString(translationId)) {
                 throw new Error('i18n filter error: The translation id must be a string');
             }
             object = object ? object : {};

@@ -45,11 +45,11 @@ describe('i18n', function ()
             $i18nProvider.fileURL = '/api/|LANGUAGE|/|PARTIAL|';
             expect($i18nProvider.fileURL).toEqual('/api/|LANGUAGE|/|PARTIAL|');
 
-            $i18nProvider.fileURLLanguageRegex = '|LANGUAGE|';
-            expect($i18nProvider.fileURLLanguageRegex).toEqual('|LANGUAGE|');
+            $i18nProvider.fileURLLanguageRegex = /\|LANGUAGE\|/;
+            expect($i18nProvider.fileURLLanguageRegex).toEqual(/\|LANGUAGE\|/);
 
-            $i18nProvider.fileURLPartialRegex = '|PARTIAL|';
-            expect($i18nProvider.fileURLPartialRegex).toEqual('|PARTIAL|');
+            $i18nProvider.fileURLPartialRegex = /\|PARTIAL\|/;
+            expect($i18nProvider.fileURLPartialRegex).toEqual(/\|PARTIAL\|/);
 
             $i18nProvider.defaultLanguage = 'fr-FR';
             expect($i18nProvider.defaultLanguage).toEqual('fr-FR');
@@ -69,6 +69,7 @@ describe('i18n', function ()
             {
                 //  set up the provider
                 $i18nProvider.allowPartialFileLoading = false;
+                $i18nProvider.fileURLLanguageRegex = /\|LANG\|/;
                 $i18nProvider.fileURL = 'tests/mocks/|LANG|.home.json';
                 $i18nProvider.language = 'en-US';
 
@@ -229,6 +230,8 @@ describe('i18n', function ()
             {
                 //  set up the provider
                 $i18nProvider.allowPartialFileLoading = true;
+                $i18nProvider.fileURLLanguageRegex = /\|LANG\|/;
+                $i18nProvider.fileURLPartialRegex = /\|PART\|/;
                 $i18nProvider.fileURL = 'tests/mocks/|LANG|.|PART|.json';
                 $i18nProvider.language = 'en-US';
 
