@@ -168,7 +168,7 @@ angular.module('angular-i18n', ['ng'])
                             var translated;
 
                             //  return an empty string for undefined value
-                            if( value === "undefined" || value === null )
+                            if( value === undefined || value === null )
                             {
                                 return '';
                             }
