@@ -533,6 +533,7 @@ angular.module('angular-i18n', ['ng'])
                 i18n: '=',
                 i18nParameters: '=?'
             },
+            priority: -1,
             restrict: "A",
             link: function (scope, elm, attrs) {
                 scope.i18nParameters = angular.extend({}, scope.i18nParameters);
