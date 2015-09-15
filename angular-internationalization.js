@@ -184,7 +184,7 @@ angular.module('angular-i18n', ['ng'])
                             else {
                                 if( !this._dictionary[lang].sections[section]
                                     || (this._dictionary[lang].sections[section].loaded === true
-                                        && this._dictionary[lang].sections[section].translation === null ))
+                                    && this._dictionary[lang].sections[section].translation === null ))
                                 {
                                     throw new Error('The section you are trying to access do not exists');
                                 }
@@ -268,9 +268,12 @@ angular.module('angular-i18n', ['ng'])
                             };
 
                             //  we will store the promise here.
-                            if( !this._promises[lang] )
+                            if ( !this._promises[lang])
                             {
-                                this._promises[lang] = {};
+                                this._promises[lang] = {sections: {}};
+                            }
+                            if (!this._promises[lang].sections[section]) {
+                                this._promises[lang].sections[section] = {};
                             }
 
                             //  create the promise we will return
@@ -312,7 +315,7 @@ angular.module('angular-i18n', ['ng'])
 
                                 return $http({method: "GET", url: url, cache: false})
                                     .success(function (data, status, headers, config) {
-                                        deferrer.resolve();
+                                        //deferrer.resolve();
                                         self._loadTranslationFileSucceed(data, lang, section);
                                     })
                                     .error(function () {
@@ -328,12 +331,12 @@ angular.module('angular-i18n', ['ng'])
 
                                             deferrer.reject('None of the URL can be reach');
                                             var urls = angular.isArray(_this._fileURL) ? _this._fileURL.join(', ') : _this._fileURL;
-                                            for (var promiseObject in self._promises[lang]) {
-                                                if (self._promises[lang].hasOwnProperty(promiseObject)) {
-                                                    self._promises[lang][promiseObject]
+                                            for (var promiseObject in self._promises[lang].sections[section]) {
+                                                if (self._promises[lang].sections[section].hasOwnProperty(promiseObject)) {
+                                                    self._promises[lang].sections[section][promiseObject]
                                                         .deferrer
                                                         .reject("Could not load translation files from " + urls);
-                                                    delete self._promises[lang][promiseObject];
+                                                    delete self._promises[lang].sections[section][promiseObject];
                                                 }
                                             }
                                         }
@@ -367,19 +370,19 @@ angular.module('angular-i18n', ['ng'])
                             };
 
                             //  loop into any promises yet to be resolved for this language
-                            for (var promiseObject in self._promises[lang]) {
-                                if (self._promises[lang].hasOwnProperty(promiseObject)) {
+                            for (var promiseObject in self._promises[lang].sections[section]) {
+                                if (self._promises[lang].sections[section].hasOwnProperty(promiseObject)) {
                                     try {
-                                        translation = self._translate.apply(self, self._promises[lang][promiseObject].arguments);
-                                        self._promises[lang][promiseObject].deferrer.resolve(translation);
+                                        translation = self._translate.apply(self, self._promises[lang].sections[section][promiseObject].arguments);
+                                        self._promises[lang].sections[section][promiseObject].deferrer.resolve(translation);
                                     }
                                     catch(e)
                                     {
-                                        self._promises[lang][promiseObject].deferrer.reject(e.message);
+                                        self._promises[lang].sections[section][promiseObject].deferrer.reject(e.message);
                                         $log.error(e);
                                     }
 
-                                    delete self._promises[lang][promiseObject];
+                                    delete self._promises[lang].sections[section][promiseObject];
                                 }
                             }
 
@@ -407,7 +410,10 @@ angular.module('angular-i18n', ['ng'])
                                     promise = null;
 
                                 //  a promise exists for this value for this language returns it
-                                if (self._promises[lang] && self._promises[lang][value]) {
+                                if (self._promises[lang] &&
+                                    self._promises[lang].sections[section] &&
+                                    self._promises[lang].sections[section][value]
+                                ) {
                                     return self._promises[lang][value].deferrer;
                                 }
 
@@ -425,7 +431,7 @@ angular.module('angular-i18n', ['ng'])
                                     };
 
                                     if (!instant) {
-                                        self._promises[lang][value] = {arguments: arguments, deferrer: deferrer};
+                                        self._promises[lang].sections[section][value] = {arguments: arguments, deferrer: deferrer};
                                     }
                                     return deferrer;
                                 }
@@ -442,7 +448,7 @@ angular.module('angular-i18n', ['ng'])
                             if (!this._dictionary[lang]
                                 || (!this._dictionary[lang].sections[section])
                                 || (!this._dictionary[lang].sections[section].loading
-                                    && !this._dictionary[lang].sections[section].loaded)) {
+                                && !this._dictionary[lang].sections[section].loaded)) {
                                 this.loadTranslationFile(lang, section);
                             }
 
