@@ -394,7 +394,7 @@ angular.module('angular-i18n', ['ng'])
                                     self._promises[lang].sections[section] &&
                                     self._promises[lang].sections[section][value]
                                 ) {
-                                    return self._promises[lang][value].deferrer;
+                                    return self._promises[lang].sections[section][value].deferrer;
                                 }
                                 
                                 //  no promise exists for this value, create it
