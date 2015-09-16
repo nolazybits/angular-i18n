@@ -7,7 +7,7 @@ describe('i18n', function ()
     {
         // Here we create a fake module just to intercept and store the provider
         // when it's injected, i.e. during the config phase.
-        angular.module('dummyModule', function () {})
+        angular.module('dummyModule', ['angular-i18n'])
             .config(['$i18nProvider', function (_$i18nProvider_)
             {
                 $i18nProvider = _$i18nProvider_;
