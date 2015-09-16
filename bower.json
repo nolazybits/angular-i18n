@@ -22,10 +22,13 @@
   },
   "dependencies": {
     "sprintf": null,
-    "angular": "^1.3.x",
-    "angular-sanitize": "^1.3.x"
+    "angular": "~1.3.x",
+    "angular-sanitize": "~1.3.x"
   },
   "devDependencies": {
-    "angular-mocks": "^1.3.x"
+    "angular-mocks": "~1.3.x"
+  },
+  "resolutions": {
+    "angular": "1.3.18"
   }
 }
