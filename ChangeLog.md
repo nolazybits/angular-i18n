@@ -1,3 +1,4 @@
+* 2015-08-07   v1.1.8   Fixed issue when loading multiple sections.
 * 2015-08-07   v1.1.7   Change directive priority to be executed last
 * 2015-08-03   v1.1.6   Fixed undefined check   
 * 2015-07-23   v1.1.5   Fixed checking for section regex in string.  Added i18n.file.loaded event.  null or undefined i18n value on filter now translate to an empty string   
