@@ -298,7 +298,7 @@ angular.module('angular-i18n', ['ng'])
                                 
                                 return $http({method: "GET", url: url, cache: false})
                                     .success(function (data, status, headers, config) {
-                                        //deferrer.resolve();
+                                        deferrer.resolve();
                                         self._loadTranslationFileSucceed(data, lang, section);
                                     })
                                     .error(function () {
