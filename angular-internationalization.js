@@ -215,6 +215,12 @@ angular.module('angular-i18n', ['ng'])
                                     sections: {}
                                 }
                             }
+                            if (!this._promises[lang]) {
+                                this._promises[lang] =
+                                {
+                                    sections: {}
+                                }
+                            }
                             this._loadTranslationFileSucceed(json, lang, section);
                         },
                         
@@ -351,7 +357,7 @@ angular.module('angular-i18n', ['ng'])
                             };
                             
                             //  loop into any promises yet to be resolved for this language
-                            if( self._promises[lang] && self._promises[lang].section[section])
+                            if( self._promises[lang] && self._promises[lang] && self._promises[lang].sections[section])
                             {
                                 for (var promiseObject in self._promises[lang].sections[section]) {
                                     if (self._promises[lang].sections[section].hasOwnProperty(promiseObject)) {
