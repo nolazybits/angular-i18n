@@ -351,21 +351,24 @@ angular.module('angular-i18n', ['ng'])
                             };
                             
                             //  loop into any promises yet to be resolved for this language
-                            for (var promiseObject in self._promises[lang].sections[section]) {
-                                if (self._promises[lang].sections[section].hasOwnProperty(promiseObject)) {
-                                    try {
-                                        translation = self._translate.apply(self, self._promises[lang].sections[section][promiseObject].arguments);
-                                        self._promises[lang].sections[section][promiseObject].deferrer.resolve(translation);
+                            if( self._promises[lang] && self._promises[lang].section[section])
+                            {
+                                for (var promiseObject in self._promises[lang].sections[section]) {
+                                    if (self._promises[lang].sections[section].hasOwnProperty(promiseObject)) {
+                                        try {
+                                            translation = self._translate.apply(self, self._promises[lang].sections[section][promiseObject].arguments);
+                                            self._promises[lang].sections[section][promiseObject].deferrer.resolve(translation);
+                                        }
+                                        catch (e) {
+                                            self._promises[lang].sections[section][promiseObject].deferrer.reject(e.message);
+                                            $log.error(e);
+                                        }
+
+                                        delete self._promises[lang].sections[section][promiseObject];
                                     }
-                                    catch (e) {
-                                        self._promises[lang].sections[section][promiseObject].deferrer.reject(e.message);
-                                        $log.error(e);
-                                    }
-                                    
-                                    delete self._promises[lang].sections[section][promiseObject];
                                 }
                             }
-                            
+
                             //  broadcast that the file has been loaded
                             $rootScope.$broadcast('i18n.file.loaded', lang, section, data);
                         },

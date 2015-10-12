@@ -1,3 +1,4 @@
+* 2015-10-13   v1.1.9   Fix error when looking for promise in array with no record.
 * 2015-08-07   v1.1.8   Fixed issue when loading multiple sections.
 * 2015-08-07   v1.1.7   Change directive priority to be executed last
 * 2015-08-03   v1.1.6   Fixed undefined check   

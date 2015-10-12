@@ -1,6 +1,6 @@
 {
   "name": "angular-internationalization",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "angular i18n",
   "main": "angular-internationalization.js",
   "dependencies": {},
@@ -28,6 +28,7 @@
     "i18n",
     "l10n",
     "internationalization",
+    "internationalisation",
     "localization"
   ],
   "author": "Xavier Martin",
