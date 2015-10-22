@@ -179,12 +179,12 @@ The arguments passed are:
 
 | Methods | Description |    
 | :-------| ----------- |    
-| [addTranslation(lang, json, section)](#addtranslationobject) | add a translation object directly to i18n |
-| [removeTranslation(lang, section)](#removetranslationobject) | remove a translation object added or loaded to the library |
-| [loadTranslation(lang, section)](#loadtranslationfile) | To explicitly start loading translation file(s) for the current language using the URL and regexp provided at config time  |
-| [hasTranslation(lang, section, key)](#hastranslation) | Check if a translation exist. When omiting the key, check if there is a translation object for this section.
-| [isTranslationLoaded(lang, section)](#istranslationloaded) | Check if the translation file has been loaded or the translation object has been added successfully  
-| [translate(value, section, placeholders)](#translate) | Return a promise. **THIS IS** the function you want to use on the factory |  
+| [addTranslation(lang, json, section)](#addtranslationlang-string-json-string-section-string) | add a translation object directly to i18n |
+| [removeTranslation(lang, section)](#removetranslationlang-string-section-string) | remove a translation object added or loaded to the library |
+| [loadTranslation(lang, section)](#loadtranslationlang-string-section-string) | To explicitly start loading translation file(s) for the current language using the URL and regexp provided at config time  |
+| [hasTranslation(lang, section, key)](#hastranslationlang-string-section-string-key-string) | Check if a translation exist. When omiting the key, check if there is a translation object for this section.
+| [isTranslationLoaded(lang, section)](#istranslationloadedlang-string-section-string) | Check if the translation file has been loaded or the translation object has been added successfully  
+| [translate(value, section, placeholders)](#translatevalue-string-section-string-placeholders-array) | Return a promise. **THIS IS** the function you want to use on the factory |  
 
 ##### addTranslation(lang: string, json: string, section?: string)
 > add a translation directly to the library.
