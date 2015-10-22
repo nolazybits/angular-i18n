@@ -206,9 +206,9 @@ angular.module('angular-i18n', ['ng'])
                             return (
                                 this.isTranslationLoaded(lang, section)
                                 && this._dictionary[lang].sections[section].translation !== null
-                                && angular.isDefined(key)
+                                && (angular.isDefined(key)
                                     ? this._dictionary[lang].sections[section].translation[key] !== undefined
-                                    : this._dictionary[lang].sections[section].translation !== null
+                                    : this._dictionary[lang].sections[section].translation !== null)
                             );
                         },
 
