@@ -84,6 +84,7 @@ module.exports = function (config) {
         //  cli is using 'PhantomJS'
         browsers: ['Chrome'],
 
+        browserNoActivityTimeout: 1000,
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits

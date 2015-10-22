@@ -1,3 +1,6 @@
+//  define the jasmine timeout
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
+
 describe('i18n', function ()
 {
     var $i18nProvider;
@@ -73,12 +76,7 @@ describe('i18n', function ()
                 $i18nProvider.fileURL = 'tests/mocks/|LANG|.home.json';
                 $i18nProvider.language = 'en-US';
 
-                //  define the jasmine timeout
-                jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-
-                //  catch the http call and load the json file using
-                //  httpBackend
-
+                //  catch the http call and load the json file using httpBackend
                 $httpBackend = $injector.get('$httpBackend');
                 jasmine.getJSONFixtures().fixturesPath='base/tests/mocks';
                 $httpBackend.whenGET('tests/mocks/en_US.home.json').respond(
@@ -91,11 +89,11 @@ describe('i18n', function ()
                 });
             }));
 
-            describe('factory $i18n', function ()
+            describe(', factory $i18n', function ()
             {
                 it('should load the en_US.home.json file and translate', function(done)
                 {
-                    //this.loadTranslationFile(lang, append);
+                    //this.loadTranslation(lang, append);
                     $i18n.translate('welcome')
                         .error(function()
                         {
@@ -111,7 +109,7 @@ describe('i18n', function ()
 
                 it('should translate sprintf format', function(done)
                 {
-                    //this.loadTranslationFile(lang, append);
+                    //this.loadTranslation(lang, append);
                     $i18n.translate('sprintf.test', null, ['Karma', 10])
                         .error(function()
                         {
@@ -131,7 +129,7 @@ describe('i18n', function ()
                         $httpBackend.whenGET('tests/mocks/en_US.fail.json').respond(404, '');
                         $i18nProvider.fileURL = ['tests/mocks/|LANG|.fail.json', 'tests/mocks/|LANG|.home.json'];
 
-                        //this.loadTranslationFile(lang, append);
+                        //this.loadTranslation(lang, append);
                         var translation = $i18n.translate('welcome');
                         translation
                             .error(function () {
@@ -164,7 +162,7 @@ describe('i18n', function ()
                 it('should load the en_US.home.json file and translate', function(done)
                 {
 
-                    $i18n.loadTranslationFile($i18n.language)
+                    $i18n.loadTranslation($i18n.language)
                     .success(function(){
                         var translation = i18n('welcome');
                         expect(translation).toEqual('Welcome home');
@@ -176,7 +174,7 @@ describe('i18n', function ()
                 it('should translate sprintf format', function(done)
                 {
 
-                    $i18n.loadTranslationFile($i18n.language)
+                    $i18n.loadTranslation($i18n.language)
                     .success(function(){
                         var translation = i18n('sprintf.test', {placeholders:['Karma', 10]});
                         expect(translation).toEqual('Karma,10');
@@ -193,7 +191,7 @@ describe('i18n', function ()
                 it('should fail when trying to translate a non existing translationId', function(done)
                 {
 
-                    $i18n.loadTranslationFile($i18n.language)
+                    $i18n.loadTranslation($i18n.language)
                         .success(function(){
                             expect(function() { i18n('failId'); }).toThrow(
                                 new Error('The translation for \'failId\' in the section \'all\' for \''
@@ -210,7 +208,7 @@ describe('i18n', function ()
                     $i18n.onTranslationFailed = function() { return '';};
                     spyOn($i18n, 'onTranslationFailed').and.callThrough();
 
-                    $i18n.loadTranslationFile($i18n.language)
+                    $i18n.loadTranslation($i18n.language)
                         .success(function(){
                             i18n('failId');
                             expect($i18n.onTranslationFailed).toHaveBeenCalledWith($i18n.language, 'failId', undefined, undefined);
@@ -235,9 +233,6 @@ describe('i18n', function ()
                 $i18nProvider.fileURL = 'tests/mocks/|LANG|.|PART|.json';
                 $i18nProvider.language = 'en-US';
 
-                //  define the jasmine timeout
-                jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-
                 //  catch the http call and load the json file using
                 $httpBackend = $injector.get('$httpBackend');
                 jasmine.getJSONFixtures().fixturesPath='base/tests/mocks';
@@ -260,9 +255,11 @@ describe('i18n', function ()
             {
                 it('should load the en_US.home.json file and translate', function(done)
                 {
-                    //this.loadTranslationFile(lang, append);
+                    //this.loadTranslation(lang, append);
                     $i18n.translate('welcome', 'home')
-                        .error(function(){this.fail();})
+                        .error(function(){
+                            this.fail();
+                        })
                         .success(function(translated)
                         {
                             expect(translated).toEqual('Welcome home');
@@ -322,7 +319,7 @@ describe('i18n', function ()
                 it('should load the en_US.home.json file and translate', function(done)
                 {
 
-                    $i18n.loadTranslationFile($i18n.language, 'home')
+                    $i18n.loadTranslation($i18n.language, 'home')
                     .success(function(){
                         var translation = i18n('welcome', {section: 'home'});
                         expect(translation).toEqual('Welcome home');
@@ -334,7 +331,7 @@ describe('i18n', function ()
                 it('should fail when trying to load a non existing section', function(done)
                 {
 
-                    $i18n.loadTranslationFile($i18n.language, 'fail')
+                    $i18n.loadTranslation($i18n.language, 'fail')
                     .finally(function(){
                         expect(function() { i18n('welcome', {section: 'fail'}); }).toThrow(
                             new Error('The section you are trying to access do not exists')
@@ -347,7 +344,7 @@ describe('i18n', function ()
                 it('should fail when trying to translate a non existing translationId', function(done)
                 {
 
-                    $i18n.loadTranslationFile($i18n.language, 'home')
+                    $i18n.loadTranslation($i18n.language, 'home')
                         .success(function(){
                             expect(function() { i18n('failId', {section: 'home'}); }).toThrow(
                                 new Error('The translation for \'failId\' in the section \'home\' for \''
@@ -364,7 +361,7 @@ describe('i18n', function ()
                     $i18n.onTranslationFailed = function() { return '';};
                     spyOn($i18n, 'onTranslationFailed').and.callThrough();
 
-                    $i18n.loadTranslationFile($i18n.language, 'home')
+                    $i18n.loadTranslation($i18n.language, 'home')
                         .success(function(){
                             i18n('failId', {section: 'home'});
                             expect($i18n.onTranslationFailed).toHaveBeenCalledWith($i18n.language, 'failId', 'home', undefined);

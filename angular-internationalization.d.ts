@@ -22,9 +22,11 @@ declare module angular.i18n {
         debug: boolean;
         language: string;
         onTranslationFailed: Function;
-        addTranslationObject(lang: string, json: string, section?: string): void;
-        removeTranslationObject(lang: string, section?:string): void;
-        loadTranslationFile (lang:string, section?: string): void;
+        addTranslation(lang: string, json: string, section?: string): void;
+        removeTranslation(lang: string, section?:string): void;
+        loadTranslation(lang:string, section?: string): void;
+        hasTranslation(lang:string, section?: string, key?: string): void;
+        isTranslationLoaded(lang:string, section?: string): void;
         translate (id:string, section?: string): II18nPromise;
     }
 

@@ -176,14 +176,13 @@ angular.module('angular-i18n', ['ng'])
                                 }
                             }
                             else {
-                                if (!this._dictionary[lang].sections[section]
-                                    || (this._dictionary[lang].sections[section].loaded === true
-                                    && this._dictionary[lang].sections[section].translation === null )) {
+                                if (!this.hasTranslation(lang, section))
+                                {
                                     throw new Error('The section you are trying to access do not exists');
                                 }
                                 
-                                if (this._dictionary[lang].sections[section].translation
-                                    && !this._dictionary[lang].sections[section].translation[value]) {
+                                if (!this.hasTranslation(lang, section, value))
+                                {
                                     throw new Error('The translation for \'' + value + '\' in the section \''
                                         + section + '\' for \'' + lang + '\' does not exists');
                                 }
@@ -202,8 +201,24 @@ angular.module('angular-i18n', ['ng'])
                             
                             return translated;
                         },
-                        
-                        addTranslationObject: function (lang, json, section) {
+
+                        hasTranslation: function (lang, section, key) {
+                            return (
+                                this.isTranslationLoaded(lang, section)
+                                && this._dictionary[lang].sections[section].translation !== null
+                                && angular.isDefined(key)
+                                    ? this._dictionary[lang].sections[section].translation[key] !== undefined
+                                    : this._dictionary[lang].sections[section].translation !== null
+                            );
+                        },
+
+                        isTranslationLoaded: function (lang, section) {
+                            return (this._dictionary[lang]
+                            && this._dictionary[lang].sections[section]
+                            && this._dictionary[lang].sections[section].loaded === true);
+                        },
+
+                        addTranslation: function (lang, json, section) {
                             if (!_this.allowPartialFileLoading && section !== 'all') {
                                 throw new Error('Partial loading has been disable by the provider.');
                             }
@@ -211,7 +226,6 @@ angular.module('angular-i18n', ['ng'])
                             if (!this._dictionary[lang]) {
                                 this._dictionary[lang] =
                                 {
-                                    translation: null,
                                     sections: {}
                                 }
                             }
@@ -224,18 +238,23 @@ angular.module('angular-i18n', ['ng'])
                             this._loadTranslationFileSucceed(json, lang, section);
                         },
                         
-                        removeTranslationObject: function (lang, section) {
-                            section = angular.isDefined(section) ? section : 'all';
-                            
-                            if (this._dictionary[lang] && (this._dictionary[lang].loading === true
-                                || this._dictionary[lang].loaded === true)) {
+                        removeTranslation: function (lang, section) {
+                            section = angular.isDefined(section) && section !== null ? section : 'all';
+                            if(!this.allowPartialFileLoading())
+                            {
+                                if(section !== 'all')
+                                {
+                                    throw new Error('removeTranslation: You cannot pass a section when not allowing partial file loading with allowPartialFileLoading()')
+                                }
+                            }
+                            else if( !this.isTranslationLoaded(lang, section))
+                            {
                                 return;
                             }
-                            delete this._dictionary[lang];
+                            delete this._dictionary[lang].sections[section];
                         },
-                        
-                        
-                        loadTranslationFile: function (lang, section) {
+
+                        loadTranslation: function (lang, section) {
                             var self = this,
                                 deferrer,
                                 loadedFilePromise;
@@ -437,7 +456,7 @@ angular.module('angular-i18n', ['ng'])
                                 || (!this._dictionary[lang].sections[section])
                                 || (!this._dictionary[lang].sections[section].loading
                                 && !this._dictionary[lang].sections[section].loaded)) {
-                                this.loadTranslationFile(lang, section);
+                                this.loadTranslation(lang, section);
                             }
                             
                             //  we have called the loading process but we are still waiting on the file
@@ -494,7 +513,7 @@ angular.module('angular-i18n', ['ng'])
                 }
             }
             //  load translation file (if needed)
-            $i18n.loadTranslationFile($i18n.language, object.section, object.placeholders);
+            $i18n.loadTranslation($i18n.language, object.section, object.placeholders);
             
             try {
                 var translation = $i18n._getLanguageAndTranslate.call($i18n, translationId, object.section, object.placeholders);

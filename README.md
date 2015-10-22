@@ -179,38 +179,65 @@ The arguments passed are:
 
 | Methods | Description |    
 | :-------| ----------- |    
-| [addTranslationObject(lang, json, section)](#addtranslationobject) | add a translation object directly to i18n |
-| [removeTranslationObject(lang, section)](#removetranslationobject) | remove a translation object added or loaded to the library |
-| [loadTranslationFile(lang, section)](#loadtranslationfile) | To explicitly start loading translation file(s) for the current language using the URL and regexp provided at config time  |
+| [addTranslation(lang, json, section)](#addtranslationobject) | add a translation object directly to i18n |
+| [removeTranslation(lang, section)](#removetranslationobject) | remove a translation object added or loaded to the library |
+| [loadTranslation(lang, section)](#loadtranslationfile) | To explicitly start loading translation file(s) for the current language using the URL and regexp provided at config time  |
+| [hasTranslation(lang, section, key)](#hastranslation) | Check if a translation exist. When omiting the key, check if there is a translation object for this section.
+| [isTranslationLoaded(lang, section)](#istranslationloaded) | Check if the translation file has been loaded or the translation object has been added successfully  
 | [translate(value, section, placeholders)](#translate) | Return a promise. **THIS IS** the function you want to use on the factory |  
 
-##### addTranslationObject(lang: string, json: string, section: string)
+##### addTranslation(lang: string, json: string, section?: string)
 > add a translation directly to the library.
-> lang: the language to add
-> json: the json string
-> (section): the section for the language file
+>
+>  * lang: the language to add    
+>  * json: the json string  
+>  * (section): the section for the language file  
 
-This can prove usefull if you want to retrieve the translation object(s) yourself and then add them to this library.
+This can prove useful if you want to retrieve the translation object(s) yourself and then add them to this library.
 
-##### removeTranslationObject(lang: string, section: string)
+##### removeTranslation(lang: string, section?: string)
 > remove a translation from the library
-> lang: the language to remove from
-> (section): the section to remove from
-
-If no section are provided the whole language will be removed from the library.
+>
+>  * lang: the language to remove    
+>  * (section): the section to remove  
 
 **Note**: a section can only be provided if ```$i18nProvider.```[```allowPartialFileLoading```](#allowpartialfileloading) has been set to ```true```  
 
-##### loadTranslationFile(lang: string, section: string)
+##### loadTranslation(lang: string, section?: string)
 > To explicitly start loading translation file(s) for the current language using the URL and regexp provided at config time
-> lang: the language to remove from
-> (section): the section to remove from
+>
+>  * lang: the language to load      
+>  * (section): the section to load   
+  
+**Note**: a section can only be provided if ```$i18nProvider.```[```allowPartialFileLoading```](#allowpartialfileloading) has been set to ```true``` 
+
+##### hasTranslation(lang: string, section?: string, key?: string)
+> Check if a translation exist.  
+>
+>  * lang: the language to check exists    
+>  * (section): the section to check exists   
+>  * (key): the key to check exists
+
+When omitting the key, check if there is a translation object for this section.  
+You **HAVE TO** pass null to the section when not using [```allowPartialFileLoading```](#allowpartialfileloading)  
+
+**Note**: a section can only be provided if ```$i18nProvider.```[```allowPartialFileLoading```](#allowpartialfileloading) has been set to ```true``` 
+
+##### isTranslationLoaded(lang: string, section?: string)
+> Check if the translation file has been loaded or the translation object has been added successfully.
+>
+>  * lang: the language to check translation has been loaded    
+>  * (section): the section to check translation has been loaded   
 
 **Note**: a section can only be provided if ```$i18nProvider.```[```allowPartialFileLoading```](#allowpartialfileloading) has been set to ```true``` 
 
 ##### translate(value: string, section?: string, placeholders?: Array)
 > Return a promise. **THIS IS** the function you want to use
-
+>
+>  * value: the translation ID      
+>  * (section): the section this translation ID belongs to
+>  * (palceholders): the section this translation ID belongs to
+   
 The placeholders array is the value that are going to replace the sprintf placeholders. 
 
 **Note**: a section can only be provided if ```$i18nProvider.```[```allowPartialFileLoading```](#allowpartialfileloading) has been set to ```true``` 
