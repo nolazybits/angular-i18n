@@ -236,7 +236,7 @@ You **HAVE TO** pass null to the section when not using [```allowPartialFileLoad
 >
 >  * value: the translation ID      
 >  * (section): the section this translation ID belongs to
->  * (palceholders): the section this translation ID belongs to
+>  * (placeholders): array of value to replace sprintf string placeholders 
    
 The placeholders array is the value that are going to replace the sprintf placeholders. 
 

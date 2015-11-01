@@ -27,7 +27,7 @@ declare module angular.i18n {
         loadTranslation(lang:string, section?: string): void;
         hasTranslation(lang:string, section?: string, key?: string): void;
         isTranslationLoaded(lang:string, section?: string): void;
-        translate (id:string, section?: string): II18nPromise;
+        translate (id:string, section?: string, placeholders?: string|number[]): II18nPromise;
     }
 
     interface II18nPromiseCallback {
