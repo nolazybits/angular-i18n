@@ -1,4 +1,5 @@
-* 2015-10-23   v1.2.1   Updated definition file.  
+* 2015-11-24   v1.2.3   Updated languages and fixed inability to wait for "loading" status on translation.  
+* 2015-10-23   v1.2.2   Updated definition file.  
 * 2015-10-23   v1.2.1   Fixed dictionnary lang is undefined in hasTranslation method.  
 * 2015-10-22   v1.2.0    **Breaking changes**  
                         Changed ```addTranslationObject``` to ```addTranslation``` for better consistency   

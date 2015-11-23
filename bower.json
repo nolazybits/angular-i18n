@@ -1,7 +1,7 @@
 {
   "name": "angular-internationalization",
   "description": "angular internationalization (i18n) provider, service, filter and directive",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "main": "angular-internationalization.js",
   "license": "MIT",
   "keyword": [
@@ -14,6 +14,11 @@
       "name": "Xavier Martin",
       "email": "nolazybits+angulari18n@gmail.com",
       "homepage": "http://nolazybits.com"
+    },
+    {
+      "name": "Dave Vaughan",
+      "email": "rbnzdave+angulari18n@gmail.com",
+      "homepage": "http://davevaughan.com"
     }
   ],
   "repository": {
