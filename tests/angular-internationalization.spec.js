@@ -334,7 +334,7 @@ describe('i18n', function ()
                     $i18n.loadTranslation($i18n.language, 'fail')
                     .finally(function(){
                         expect(function() { i18n('welcome', {section: 'fail'}); }).toThrow(
-                            new Error('The section you are trying to access does not exist')
+                            new Error('The translation for \'welcome\' in the section \'fail\' for \'' + $i18n.language + '\' does not exist.')
                         );
                         done();
                     });
