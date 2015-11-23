@@ -145,7 +145,7 @@ describe('i18n', function ()
 
                 it('should return an error if we try to do partial loading', function()
                 {
-                    expect(function() { $i18n.translate('welcome', 'home'); }).toThrow( new Error('Partial loading has been disable by the provider.') );
+                    expect(function() { $i18n.translate('welcome', 'home'); }).toThrow( new Error('Partial loading has been disabled by the provider.') );
                 });
             });
 
@@ -185,7 +185,7 @@ describe('i18n', function ()
 
                 it('should return an error if we try to do partial loading', function()
                 {
-                    expect(function() { i18n('welcome', {section:'home'}); }).toThrow( new Error('Partial loading has been disable by the provider.') );
+                    expect(function() { i18n('welcome', {section:'home'}); }).toThrow( new Error('Partial loading has been disabled by the provider.') );
                 });
 
                 it('should fail when trying to translate a non existing translationId', function(done)
@@ -195,7 +195,7 @@ describe('i18n', function ()
                         .success(function(){
                             expect(function() { i18n('failId'); }).toThrow(
                                 new Error('The translation for \'failId\' in the section \'all\' for \''
-                                    + $i18n.language +'\' does not exists')
+                                    + $i18n.language +'\' does not exist')
                             );
                             done();
                         });
@@ -334,7 +334,8 @@ describe('i18n', function ()
                     $i18n.loadTranslation($i18n.language, 'fail')
                     .finally(function(){
                         expect(function() { i18n('welcome', {section: 'fail'}); }).toThrow(
-                            new Error('The section you are trying to access do not exists')
+                            new Error('The translation for \'welcome\' in the section \'fail\' for \''
+                                + $i18n.language + '\' does not exist')
                         );
                         done();
                     });
@@ -348,7 +349,7 @@ describe('i18n', function ()
                         .success(function(){
                             expect(function() { i18n('failId', {section: 'home'}); }).toThrow(
                                 new Error('The translation for \'failId\' in the section \'home\' for \''
-                                    + $i18n.language +'\' does not exists')
+                                    + $i18n.language +'\' does not exist')
                             );
                             done();
                         });
