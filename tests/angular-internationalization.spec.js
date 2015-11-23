@@ -195,7 +195,7 @@ describe('i18n', function ()
                         .success(function(){
                             expect(function() { i18n('failId'); }).toThrow(
                                 new Error('The translation for \'failId\' in the section \'all\' for \''
-                                    + $i18n.language +'\' does not exists')
+                                    + $i18n.language +'\' does not exist')
                             );
                             done();
                         });
