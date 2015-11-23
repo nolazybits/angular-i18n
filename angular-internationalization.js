@@ -150,7 +150,7 @@ angular.module('angular-i18n', ['ng'])
                             }
                             
                             if (!_this.allowPartialFileLoading && section !== 'all') {
-                                throw new Error('Partial loading has been disable by the provider.');
+                                throw new Error('Partial loading has been disabled by the provider.');
                             }
                             return section;
                         },
@@ -178,13 +178,13 @@ angular.module('angular-i18n', ['ng'])
                             else {
                                 if (!this.hasTranslation(lang, section))
                                 {
-                                    throw new Error('The section you are trying to access do not exists');
+                                    throw new Error('The section you are trying to access does not exist');
                                 }
                                 
                                 if (!this.hasTranslation(lang, section, value))
                                 {
                                     throw new Error('The translation for \'' + value + '\' in the section \''
-                                        + section + '\' for \'' + lang + '\' does not exists');
+                                        + section + '\' for \'' + lang + '\' does not exist');
                                 }
                                 
                                 translated = this._dictionary[lang].sections[section].translation
@@ -220,7 +220,7 @@ angular.module('angular-i18n', ['ng'])
 
                         addTranslation: function (lang, json, section) {
                             if (!_this.allowPartialFileLoading && section !== 'all') {
-                                throw new Error('Partial loading has been disable by the provider.');
+                                throw new Error('Partial loading has been disabled by the provider.');
                             }
                             
                             if (!this._dictionary[lang]) {
@@ -315,7 +315,7 @@ angular.module('angular-i18n', ['ng'])
                                 url = url.replace(_this._fileURLLanguageToken, lang.replace('-', '_'));
                                 if (_this._allowPartialFileLoading) {
                                     if (!_this._fileURLPartToken.test(url)) {
-                                        throw new Error('The file URL doesn\'t defined a token for partial loading');
+                                        throw new Error('The file URL doesn\'t define a token for partial loading');
                                     }
                                     url = url.replace(_this._fileURLPartToken, section);
                                 }
@@ -336,7 +336,7 @@ angular.module('angular-i18n', ['ng'])
                                             self._dictionary[lang].sections[section].loading = false;
                                             self._dictionary[lang].sections[section].translation = null;
                                             
-                                            deferrer.reject('None of the URL can be reach');
+                                            deferrer.reject('unable to reach any of the urls');
                                             var urls = angular.isArray(_this._fileURL) ? _this._fileURL.join(', ') : _this._fileURL;
                                             for (var promiseObject in self._promises[lang].sections[section]) {
                                                 if (self._promises[lang].sections[section].hasOwnProperty(promiseObject)) {
@@ -447,7 +447,7 @@ angular.module('angular-i18n', ['ng'])
                             
                             if (value === '') {
                                 var failedDeferrer = addPromise(value, lang, section, placeholders, true);
-                                failedDeferrer.reject('No translation ID were provided');
+                                failedDeferrer.reject('No translation IDs were provided');
                                 return failedDeferrer.promise;
                             }
                             
@@ -472,7 +472,7 @@ angular.module('angular-i18n', ['ng'])
                                 //  unsuccessfully
                                 if (this._dictionary[lang].sections[section].translation === null
                                     || typeof this._dictionary[lang].sections[section].translation !== "object") {
-                                    deferrer.reject("The translation file doesn't exists");
+                                    deferrer.reject("The translation file doesn't exist");
                                 }
                                 //  successfully
                                 else {
