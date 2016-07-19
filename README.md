@@ -289,6 +289,5 @@ for the sections (or areas) of your application the user is accessing.
 Please note that each _'section'_ file will be stored independently. This means the same key can appear in different file.  
 
 ## Support on Beerpay
-Hey dude! Help me out for a couple of :beers:!
-
-[![Beerpay](https://beerpay.io/nolazybits/angular-i18n/badge.svg?style=beer-square)](https://beerpay.io/nolazybits/angular-i18n)  [![Beerpay](https://beerpay.io/nolazybits/angular-i18n/make-wish.svg?style=flat-square)](https://beerpay.io/nolazybits/angular-i18n?focus=wish)
+[![Beerpay](https://beerpay.io/nolazybits/angular-i18n/badge.svg?style=flat-square)](https://beerpay.io/nolazybits/angular-i18n)  
+[![Beerpay](https://beerpay.io/nolazybits/angular-i18n/make-wish.svg?style=flat-square)](https://beerpay.io/nolazybits/angular-i18n?focus=wish)
