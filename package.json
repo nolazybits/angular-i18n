@@ -6,15 +6,15 @@
   "dependencies": {},
   "devDependencies": {
     "istanbul-cobertura-badger": "0.0.4",
-    "jasmine-core": "^2.3.4",
-    "karma": "^0.12.36",
-    "karma-chrome-launcher": "^0.2.0",
-    "karma-coverage": "^0.4.2",
-    "karma-jasmine": "^0.3.5",
-    "karma-jasmine-html-reporter": "^0.1.8",
-    "karma-jasmine-jquery": "^0.1.1",
-    "karma-phantomjs-launcher": "^0.2.0",
-    "phantomjs": "^1.9.17"
+    "jasmine-core": "2.3.4",
+    "karma": "0.12.37",
+    "karma-chrome-launcher": "0.2.1",
+    "karma-coverage": "0.4.2",
+    "karma-jasmine": "0.3.6",
+    "karma-jasmine-html-reporter": "0.1.8",
+    "karma-jasmine-jquery": "0.1.1",
+    "karma-phantomjs-launcher": "0.2.1",
+    "phantomjs": "1.9.18"
   },
   "scripts": {
     "test": "karma start karma.conf.js --single-run --browsers PhantomJS"
