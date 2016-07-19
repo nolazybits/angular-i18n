@@ -5,16 +5,16 @@
   "main": "angular-internationalization.js",
   "dependencies": {},
   "devDependencies": {
-    "istanbul-cobertura-badger": "0.0.4",
-    "jasmine-core": "2.3.4",
-    "karma": "0.12.37",
-    "karma-chrome-launcher": "0.2.1",
-    "karma-coverage": "0.4.2",
-    "karma-jasmine": "0.3.6",
-    "karma-jasmine-html-reporter": "0.1.8",
+    "istanbul-cobertura-badger": "1.2.1",
+    "jasmine-core": "2.4.1",
+    "karma": "1.1.1",
+    "karma-chrome-launcher": "1.0.1",
+    "karma-coverage": "1.1.0",
+    "karma-jasmine": "1.0.2",
+    "karma-jasmine-html-reporter": "0.2.0",
     "karma-jasmine-jquery": "0.1.1",
-    "karma-phantomjs-launcher": "0.2.1",
-    "phantomjs": "1.9.18"
+    "karma-phantomjs-launcher": "1.0.1",
+    "phantomjs-prebuilt": "2.1.7"
   },
   "scripts": {
     "test": "karma start karma.conf.js --single-run --browsers PhantomJS"

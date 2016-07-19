@@ -29,6 +29,12 @@ module.exports = function (config) {
             'angular-internationalization.js',
             'tests/**/*.spec.js',
 
+	    // fix for https://github.com/taras42/karma-jasmine-html-reporter/issues/4
+	    // until properly fixed
+	    {pattern: 'node_modules/karma-jasmine-html-reporter/src/css/jasmine.css'},
+	    {pattern: 'node_modules/karma-jasmine-html-reporter/src/lib/html.jasmine.reporter.js'},
+     	    {pattern: 'node_modules/karma-jasmine-html-reporter/src/lib/adapter.js'},
+
             //  fixtures
             {
                 pattern: 'tests/mocks/**/*.json',
@@ -53,7 +59,7 @@ module.exports = function (config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['progress', 'html'],
+        reporters: ['progress'/*, 'kjhtml'*/],
 
         coverageReporter: {
             reporters:[
