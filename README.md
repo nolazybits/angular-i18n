@@ -287,3 +287,8 @@ for the sections (or areas) of your application the user is accessing.
   So for all those, using the default values of the library the file ```'/i18n/en-US_home.json'``` will be loaded and the key ```myTranslationID``` retreived from it
   
 Please note that each _'section'_ file will be stored independently. This means the same key can appear in different file.  
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/nolazybits/angular-i18n/badge.svg?style=beer-square)](https://beerpay.io/nolazybits/angular-i18n)  [![Beerpay](https://beerpay.io/nolazybits/angular-i18n/make-wish.svg?style=flat-square)](https://beerpay.io/nolazybits/angular-i18n?focus=wish)
