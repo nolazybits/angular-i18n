@@ -10,7 +10,7 @@ declare module angular.i18n {
         debug: boolean;
         defaultLanguage: string;
         fallback: JSON;
-        fileURL: string;
+        fileURL: string|Array<string>;
         fileURLLanguageToken: RegExp|string;
         fileURLPartToken: RegExp|string;
         language: string;

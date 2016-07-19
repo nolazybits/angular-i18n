@@ -1,7 +1,7 @@
 {
   "name": "angular-internationalization",
   "description": "angular internationalization (i18n) provider, service, filter and directive",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "main": "angular-internationalization.js",
   "license": "MIT",
   "keyword": [
