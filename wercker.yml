@@ -23,7 +23,7 @@ build:
     - npm-install
     - script:
         name: install bower
-        code: npm install -g bower
+        code: npm install -g bower@1.6.5
     - script:
         name: run bower install
         code: bower --allow-root install
