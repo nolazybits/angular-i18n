@@ -154,7 +154,7 @@ The above function returns HTML and no plain text. To have Angular displays the 
 Please check the sample app for examples.
 
 ##### useBaseHrefTag
-> Should the library prepend the base tag url to the fileURL(s) (this to help with relative links) 
+> Should the library prepend the base tag url to the fileURL(s) (this to help with relative links)   
 **type:** ```boolean```  
 **default:** ```false```
 
