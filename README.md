@@ -43,19 +43,20 @@ The fr-FR.json file looks like this
 ```
 
 #### Provider '$i18n'
-| Property | Description | Default |  
-| :-------| ----------- | ------- |  
-| [allowPartialFileLoading](#allowpartialfileloading) | Set if you want to be able to load multiple files for a language | ```false``` |  
-| [baseHref](#basehref) | the base href as found by this library | ```''``` if not provided by html page |
-| [debug](#debug) | debug mode | ```false``` |
-| [defaultLanguage](#defaultlanguage) | The default language to use | ```'en-US'``` |  
-| [fallback](#fallback) | The fallback translation object if the translation files failed to load | ```null``` |  
-| [fileURL](#fileurl) | Set the template URL(s) where translation files will be loaded from.| ```'/i18n/|LANG|_|PART|.json'``` |  
-| [fileURLLanguageToken](#fileurllanguagetoken) | The token (string\|regex) to look for in the fileURL which will be replaced with the current language string id (i.e en**_**US) to be loaded | ```/\|LANG\|/``` |  
-| [fileURLPartToken](#fileurlparttoken) | The token (string\|regex) to look for in the fileURL which will be replaced with the current section string id (i.e home) to be loaded | ```/\|PART\|/``` |         
-| [language](#language) | The language to use | ```null``` |
-| [onTranslationFailed](#ontranslationfailed) | This function is called when the debug mode is on and the translation failed on filter or directives | ```null``` |
-| [useBaseHrefTag](#usebasehreftag) | Should the library prepend the base tag url to the pathLanguageURL (this to help with relative links) | ```false``` |    
+| Property | Type | Description | Default |  
+| :------- | ---- | ----------- | ------- |  
+| [allowPartialFileLoading](#allowpartialfileloading) | boolean | Set if you want to be able to load multiple files for a language | ```false``` |  
+| [baseHref](#basehref) | string | the base href as found by this library | ```''``` if not provided by html page |
+| [debug](#debug) | boolean | debug mode | ```false``` |
+| [defaultLanguage](#defaultlanguage) | string | The default language to use | ```'en-US'``` |  
+| [fallback](#fallback) | JSON | The fallback translation object if the translation files failed to load | ```null``` |  
+| [fileURL](#fileurl) | string\|Array<string> | Set the template URL(s) where translation files will be loaded from.| ```'/i18n/|LANG|_|PART|.json'``` |  
+| [fileURLLanguageToken](#fileurllanguagetoken) | string | The token (string\|regex) to look for in the fileURL which will be replaced with the current language string id (i.e en**_**US) to be loaded | ```/\|LANG\|/``` |    
+| [fileURLPartToken](#fileurlparttoken) | string | The token (string\|regex) to look for in the fileURL which will be replaced with the current section string id (i.e home) to be loaded | ```/\|PART\|/``` |         
+| [language](#language) | string | The language to use | ```null``` |
+| [onTranslationFailed](#ontranslationfailed) | Function | This function is called when the debug mode is on and the translation failed on filter or directives | ```null``` |
+| [useBaseHrefTag](#usebasehreftag) | boolean | Should the library prepend the base tag url to the pathLanguageURL (this to help with relative links) | ```false``` |    
+   
 
 Example:  
 ```
@@ -73,24 +74,29 @@ Example:
 
 ##### allowPartialFileLoading  
 > Set if you want to be able to load multiple files for a language  
+**type:** ```boolean```  
 **default:** ```false```  
 
 Please check the [partial loading](#using-partial-loading) section in this documentation.
 
 ##### debug
 > The debug mode      
+**type:** ```boolean```  
 **default:** ```false```
 
 ##### defaultLanguage
 > The default language  
+**type:** ```string```  
 **default:** ```'en-US'```
 
 ##### fallback
 > The fallback translation object if the translation file(s) failed to load  
+**type:** ```JSON```  
 **default:** ```null```
 
 ##### fileURL  
 > Set the template URL(s) where the translation file(s) will be loaded from  
+**type:** ```string|Array<string>```  
 **default:** ```'/i18n/|LANG|.json'```  
 
 The template URL contains a language token that will be replaced (using regex replace) with the current language id.  
@@ -102,6 +108,7 @@ e.g: if you have a language set to 'en-US' the file */i18n/en_US.json* will be l
 
 ##### fileURLLanguageToken
 > The string or regex to look for which will be replaced with the current language string id (i.e en**_**US) to be loaded  
+**type:** ```string```  
 **default:** ```/\|LANG\|/```  
 
 This is the string or regular expression that will be looked for and replaced with the language id in the path template URL.  
@@ -113,6 +120,7 @@ If you are using the RegExp object double backslash like ```new RegExp('\\|LANG\
 
 ##### fileURLPartToken
 > The string or regex to look for which will be replaced with the current section string id (i.e home) to be loaded  
+**type:** ```string```  
 **default:** ```/\|PART\|/```  
 
 This is the string or regular expression that will be looked for and replaced with the section id in the path template URL.  
@@ -121,11 +129,13 @@ For more information, please check the [partial loading](#using-partial-loading)
 
 ##### language
 > The explicitly defined language  
+**type:** ```string```  
 **default:** ```null```
 
 ##### onTranslationFailed
 > Function called when the debug mode is on and when the translation failed for filters or directives.  
 > Must return a string  
+**type:** ```Function```  
 **default:** ```null```  
 
 example  
@@ -145,6 +155,7 @@ Please check the sample app for examples.
 
 ##### useBaseHrefTag
 > Should the library prepend the base tag url to the fileURL(s) (this to help with relative links) 
+**type:** ```boolean```  
 **default:** ```false```
 
 #### Factory '$18n'  
@@ -152,19 +163,21 @@ The correct language to display is determine by the provider, based on the langu
 
 The factory can use all the previous method described in the [provider](#provider-i18n) section plus the following:
 
-| Property | Description |    
-| :-------| ----------- |    
-| [language](#language-1) | The language to use |  
-| [debug](#debug) | reference the provider debug property | ```false``` |
-| [onTranslationFailed](#ontranslationfailed) | Reference the provider onTranslationFailed property | ```null``` |
+| Property | Type | Description | Default |    
+| :------- | ---- | ----------- | ------- |   
+| [language](#language-1) | string | The language to use | null |  
+| [debug](#debug) | boolean | reference the provider debug property | ```false``` |
+| [onTranslationFailed](#ontranslationfailed) | Function | Reference the provider onTranslationFailed property | ```null``` |
 
 ##### language
 > Returns the current language.  
+**type:** ```string```  
+**default:** ```null```  
 
 The returned value check first the language property (can be set at runtime), then browser language and finally the default language (can be set at config and run time)
 
 | Events | Description |    
-| :-------| ----------- |    
+| :----- | ----------- |    
 | [i18n.file.loaded](#i18n.file.loaded) | Dispatched when a translation file has been loaded |  
 
 ##### i18n.file.loaded
