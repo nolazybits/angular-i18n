@@ -1,5 +1,15 @@
+## Support on Beerpay
+Support the project or make a wish  
+[![Beerpay](https://beerpay.io/nolazybits/angular-i18n/badge.svg?style=flat-square)](https://beerpay.io/nolazybits/angular-i18n) &nbsp;&nbsp;&nbsp;&nbsp; [![Beerpay](https://beerpay.io/nolazybits/angular-i18n/make-wish.svg?style=flat-square)](https://beerpay.io/nolazybits/angular-i18n)
+
+Supporters:  
+https://beerpay.io/nolazybits/angular-i18n/supports?sort=latest&page=1
+
+## Build status  
+
 [![wercker status](https://app.wercker.com/status/4c29fbca7d6e75236843bdb3752f2273/m "wercker status")](https://app.wercker.com/project/bykey/4c29fbca7d6e75236843bdb3752f2273)      
 
+## Documentation  
 angular-i18n is a small Angular module in charge of internationalization and localization.  
 
 ### Dependencies
@@ -287,7 +297,3 @@ for the sections (or areas) of your application the user is accessing.
   So for all those, using the default values of the library the file ```'/i18n/en-US_home.json'``` will be loaded and the key ```myTranslationID``` retreived from it
   
 Please note that each _'section'_ file will be stored independently. This means the same key can appear in different file.  
-
-## Support on Beerpay
-Support the project or make a wish  
-[![Beerpay](https://beerpay.io/nolazybits/angular-i18n/badge.svg?style=flat-square)](https://beerpay.io/nolazybits/angular-i18n) &nbsp;&nbsp;&nbsp;&nbsp; [![Beerpay](https://beerpay.io/nolazybits/angular-i18n/make-wish.svg?style=flat-square)](https://beerpay.io/nolazybits/angular-i18n)
