@@ -346,11 +346,11 @@ angular.module('angular-i18n', ['ng'])
                                 url = _this.baseHref + url;
 
                                 return $http({method: "GET", url: url, cache: false})
-                                    .success(function (data, status, headers, config) {
+                                    .then(function (response) {
                                         deferrer.resolve();
-                                        self._loadTranslationFileSucceed(data, lang, section);
-                                    })
-                                    .error(function () {
+                                        self._loadTranslationFileSucceed(response.data, lang, section);
+                                    },
+                                    function () {
                                         if (angular.isNumber(urlIndex)) {
                                             urlIndex++;
                                         }
@@ -564,7 +564,7 @@ angular.module('angular-i18n', ['ng'])
                 i18n: '=',
                 i18nParameters: '=?'
             },
-            priority: -1,
+            priority: 0,
             restrict: "A",
             link: function (scope, elm, attrs) {
                 scope.i18nParameters = angular.extend({}, scope.i18nParameters);

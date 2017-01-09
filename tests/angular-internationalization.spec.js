@@ -3,27 +3,27 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
 describe('i18n', function ()
 {
-    var $i18nProvider;
-    var $i18n;
-
-    beforeEach(function ()
-    {
-        // Here we create a fake module just to intercept and store the provider
-        // when it's injected, i.e. during the config phase.
-        angular.module('dummyModule', ['angular-i18n'])
-            .config(['$i18nProvider', function (_$i18nProvider_)
-            {
-                $i18nProvider = _$i18nProvider_;
-            }]);
-
-        module('angular-i18n', 'ngMock', 'dummyModule');
-
-        // This actually triggers the injection into dummyModule
-        inject(function() {});
-    });
-
     describe('provider $i18nProvider', function()
     {
+        var $i18nProvider;
+        var $i18n;
+
+        beforeEach(function ()
+        {
+            // Here we create a fake module just to intercept and store the provider
+            // when it's injected, i.e. during the config phase.
+            angular.module('dummyModule', ['angular-i18n'])
+                .config(['$i18nProvider', function (_$i18nProvider_)
+                {
+                    $i18nProvider = _$i18nProvider_;
+                }]);
+
+            module('angular-i18n', 'ngMock', 'dummyModule');
+
+            // This actually triggers the injection into dummyModule
+            inject(function() {});
+        });
+
         it('should have default as defined in documentation',function()
         {
             expect($i18nProvider.defaultLanguage).toEqual('en-US');
@@ -372,6 +372,62 @@ describe('i18n', function ()
                 });
 
             });
+        });
+    });
+
+    describe('directive', function() {
+        var $compile;
+        var $rootScope;
+        var $scope;
+
+        beforeEach(function ()
+        {
+            // Creating a dummy module that will allow testing the i18n directive when another
+            // directive that is `terminal: true` and `priority: 0`.
+            angular.module('dummyModule', [])
+                .directive('dummyTerminal', [function ()
+                {
+                    return {
+                        restrict: "A",
+                        terminal: true,
+                        link: function() { }
+                    };
+                }]);
+
+            module('angular-i18n', 'ngMock', 'dummyModule');
+
+            module(['$provide', function($provide) {
+                $provide.value('$i18n', {
+                    translate: function(key) {
+                        return {
+                            success: function(callback) {
+                                callback(key + '_translated');
+                                return this;
+                            },
+                            error: function() {
+                            }
+                        }
+                    }
+                });
+            }]);
+
+            // This actually triggers the injection into dummyModule
+            inject(['$compile', '$rootScope', function (_$compile_, _$rootScope_)
+            {
+                $compile = _$compile_;
+                $rootScope = _$rootScope_;
+                $scope = $rootScope.$new();
+            }]);
+        });
+
+        it('should set text to the element', function() {
+            var element = $compile('<div i18n="\'SOME_KEY\'"></div>')($scope);
+            expect(element.text()).toEqual('SOME_KEY_translated');
+        });
+
+        it('should set text to the element with other terminal directive', function() {
+            var element = $compile('<div dummy-terminal i18n="\'SOME_OTHER_KEY\'"></div>')($scope);
+            expect(element.text()).toEqual('SOME_OTHER_KEY_translated');
         });
     });
 });
