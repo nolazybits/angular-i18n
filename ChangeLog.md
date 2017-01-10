@@ -1,3 +1,4 @@
+* 2017-01-09   v1.2.5   Changed priority of the i18n directive from -1 to 0 in order for it to work with other directives that have default priority (0) and are terminal (`terminal: true`), such as `ng-transclude` in AngularJS >= 1.5.8.
 * 2015-11-24   v1.2.4   fileURL can now be an array of URL to get translation file from. Hit in array order.  
 * 2015-11-24   v1.2.3   Updated languages and fixed inability to wait for "loading" status on translation.  
 * 2015-10-23   v1.2.2   Updated definition file.  
