@@ -264,7 +264,7 @@ angular.module('angular-i18n', ['ng'])
 
                         removeTranslation: function (lang, section) {
                             section = angular.isDefined(section) && section !== null ? section : 'all';
-                            if(!this.allowPartialFileLoading())
+                            if(!_this.allowPartialFileLoading)
                             {
                                 if(section !== 'all')
                                 {
