@@ -279,6 +279,7 @@ angular.module('angular-i18n', ['ng'])
                         },
                         
                         switchTranslation: function(lang, section) {
+                            section = angular.isDefined(section) && section !== null ? section : 'all';
                             this.language = lang;
                             this.loadTranslation(lang, section);
                         },
