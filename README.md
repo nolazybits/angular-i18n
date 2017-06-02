@@ -205,6 +205,7 @@ The arguments passed are:
 | [addTranslation(lang, json, section)](#addtranslationlang-string-json-string-section-string) | add a translation object directly to i18n |
 | [removeTranslation(lang, section)](#removetranslationlang-string-section-string) | remove a translation object added or loaded to the library |
 | [loadTranslation(lang, section)](#loadtranslationlang-string-section-string) | To explicitly start loading translation file(s) for the current language using the URL and regexp provided at config time  |
+| [switchTranslation(lang, section)](#switchtranslationlang-string-section-string) | If you already loaded a language, you can explicitly switch to other and refresh all translations |
 | [hasTranslation(lang, section, key)](#hastranslationlang-string-section-string-key-string) | Check if a translation exist. When omiting the key, check if there is a translation object for this section.
 | [isTranslationLoaded(lang, section)](#istranslationloadedlang-string-section-string) | Check if the translation file has been loaded or the translation object has been added successfully  
 | [translate(value, section, placeholders)](#translatevalue-string-section-string-placeholders-array) | Return a promise. **THIS IS** the function you want to use on the factory |  
@@ -228,6 +229,14 @@ This can prove useful if you want to retrieve the translation object(s) yourself
 
 ##### loadTranslation(lang: string, section?: string)
 > To explicitly start loading translation file(s) for the current language using the URL and regexp provided at config time
+>
+>  * lang: the language to load      
+>  * (section): the section to load   
+  
+**Note**: a section can only be provided if ```$i18nProvider.```[```allowPartialFileLoading```](#allowpartialfileloading) has been set to ```true``` 
+
+##### switchTranslation(lang: string, section?: string)
+> To switch translation from the current language to other and refresh all translations made
 >
 >  * lang: the language to load      
 >  * (section): the section to load   
