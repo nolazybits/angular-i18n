@@ -24,6 +24,7 @@ declare module angular.i18n {
         onTranslationFailed: Function;
         addTranslation(lang: string, json: string, section?: string): void;
         removeTranslation(lang: string, section?:string): void;
+        switchTranslation(lang: string, section?:string): void;
         loadTranslation(lang:string, section?: string): void;
         hasTranslation(lang:string, section?: string, key?: string): void;
         isTranslationLoaded(lang:string, section?: string): void;
