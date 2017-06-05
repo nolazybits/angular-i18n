@@ -277,6 +277,12 @@ angular.module('angular-i18n', ['ng'])
                             }
                             delete this._dictionary[lang].sections[section];
                         },
+                        
+                        switchTranslation: function(lang, section) {
+                            section = angular.isDefined(section) && section !== null ? section : 'all';
+                            this.language = lang;
+                            this.loadTranslation(lang, section);
+                        },
 
                         loadTranslation: function (lang, section) {
                             var self = this,
