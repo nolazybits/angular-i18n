@@ -113,7 +113,7 @@ The template URL contains a language token that will be replaced (using regex re
 The URL can also contain a optional part token needed if you have set [```allowPartialFileLoading```](#allowpartialfileloading) to ```true```  
 For more information the [partial loading](#using-partial-loading) section in this documentation.  
 
-**Note: the language id will have the the '-' replaced with '_' (i.e 'en-US' will become en_US).  
+**Note: the language id will have the '-' replaced with '_' (i.e 'en-US' will become en_US).  
 e.g: if you have a language set to 'en-US' the file */i18n/en_US.json* will be loaded.**
 
 ##### fileURLLanguageToken
@@ -123,7 +123,7 @@ e.g: if you have a language set to 'en-US' the file */i18n/en_US.json* will be l
 
 This is the string or regular expression that will be looked for and replaced with the language id in the path template URL.  
 
-**Note:** the language id will have the the '-' replaced with '_' (i.e 'en-US' will become en_US).  
+**Note:** the language id will have the '-' replaced with '_' (i.e 'en-US' will become en_US).  
 So if you have a language set to 'en-US' the file */i18n/en_US.json* will be loaded.  
 If you are using the RegExp object double backslash like ```new RegExp('\\|LANG\\|');```
 
